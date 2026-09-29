@@ -1,0 +1,126 @@
+[
+  {
+    "Id": 0,
+    "Name": "Checkpoint",
+    "Position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "Id": 1,
+    "Name": "Platform",
+    "Position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "Size": {
+      "x": 3,
+      "y": 3,
+      "z": 3
+    }
+  },
+  {
+    "Id": 2,
+    "Name": "PlatformStart",
+    "Position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "Size": {
+      "x": 3,
+      "y": 3,
+      "z": 3
+    },
+    "Orientation": 90
+  },
+  {
+    "Id": 3,
+    "Name": "PlatformEnd",
+    "Position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "Size": {
+      "x": 3,
+      "y": 3,
+      "z": 3
+    },
+    "Orientation": 90
+  },
+  {
+    "Id": 4,
+    "Name": "PlatformMoving",
+    "StartingPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "Size": {
+      "x": 3,
+      "y": 3,
+      "z": 3
+    },
+    "EndingPosition": {
+      "x": 10,
+      "y": 3,
+      "z": 20
+    },
+    "MovementTime": 4
+  },
+  {
+    "Id": 5,
+    "Name": "PlatformTrampoline",
+    "StartingPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "Orientation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "Id": 6,
+    "Name": "TrapBumper",
+    "Position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "Id": 7,
+    "Name": "TrapFan",
+    "Position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "Size": {
+      "x": 3,
+      "y": 3,
+      "z": 3
+    },
+    "Orientation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "Id": 8,
+    "Name": "TrapThrower",
+    "StartingPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  }
+]
