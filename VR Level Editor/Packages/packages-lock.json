@@ -184,6 +184,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "factory.frenzy.shared": {
+      "version": "file:../../Shared Assets",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
