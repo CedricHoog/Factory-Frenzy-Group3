@@ -30,7 +30,7 @@ public class GameElementManager : MonoBehaviour
     public void changeModeUI()
     {
     //might need to be in a different file ? idk
-    //TODO : toggle add/modify mode
+    //TODO : toggle add mode / modify mode
     //also check selectedGameElementId for some values
     }
 
