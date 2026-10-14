@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/FactoryFrenzy/Scenes/Startup.unity
+    guid: 932993c21af10f240aef46bae0f041e4
+  - enabled: 1
+    path: Assets/FactoryFrenzy/Scenes/MainMenu.unity
+    guid: 8da9e99e8e9db914185f994d9189e94d
+  - enabled: 1
+    path: Assets/FactoryFrenzy/Scenes/Lobby.unity
+    guid: e9017d5f96b9f09489b4b37e1d6eb914
   m_configObjects: {}

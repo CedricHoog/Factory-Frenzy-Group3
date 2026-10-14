@@ -1,0 +1,93 @@
+using System.Linq;
+using System.Text.RegularExpressions;
+using TMPro;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UTP;
+using UnityEngine;
+using System;
+//using WSMulti.Gameplay.Player;
+
+
+namespace FactoryFrenzy.UI
+{
+
+    public class MainMenu : MonoBehaviour
+    {
+        [SerializeField] private TMP_InputField PseudoField, IPField, PortField;
+        public static string Pseudo = "";
+
+        /// <summary>
+        /// Starts the host using the given connection data.
+        /// </summary>
+        public void StartHost()
+        {
+            GameState.GameStarted = false;
+            AssignPlayerInformation();
+            SetUtpConnectionData();
+            var result = NetworkManager.Singleton.StartHost();
+            if (result)
+            {
+                NetworkManager.Singleton.SceneManager.LoadScene("Lobby", UnityEngine.SceneManagement.LoadSceneMode.Single);
+            }
+        }
+
+        /// <summary>
+        /// Starts the Client using the given connection data.
+        /// </summary>
+        public void StartClient()
+        {
+            AssignPlayerInformation();
+            SetUtpConnectionData();
+            NetworkManager.Singleton.StartClient();
+        }
+
+        public void AssignPlayerInformation()
+        {
+            var pseudo = PseudoField.text;
+            if (pseudo == "")
+            {
+                pseudo = RandomString(5);
+            }
+            Pseudo = pseudo;
+        }
+
+        public static string RandomString(int length)
+        {
+            System.Random rnd = new();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[rnd.Next(s.Length)]).ToArray());
+        }
+
+        /// <summary>
+        /// Use sanitized IP and Port to set up the connection.
+        /// </summary>
+        void SetUtpConnectionData()
+        {
+            var sanitizedIPText = SanitizeAlphaNumeric(IPField.text);
+            var sanitizedPortText = SanitizeAlphaNumeric(PortField.text);
+            if (IPField.text == "")
+            {
+                sanitizedIPText = "127.0.0.1";
+            }
+            if (PortField.text == "")
+            {
+                sanitizedPortText = "4242";
+            }
+
+            ushort.TryParse(sanitizedPortText, out var port);
+            var utp = (UnityTransport)NetworkManager.Singleton.NetworkConfig.NetworkTransport;
+            utp.SetConnectionData(sanitizedIPText, port);
+        }
+
+        /// <summary>
+        /// Sanitize user port InputField box allowing only alphanumerics and '.'
+        /// </summary>
+        /// <param name="dirtyString"> string to sanitize. </param>
+        /// <returns> Sanitized text string. </returns>
+        static string SanitizeAlphaNumeric(string dirtyString)
+        {
+            return Regex.Replace(dirtyString, "[^A-Za-z0-9.]", "");
+        }
+    }
+}
