@@ -1,0 +1,50 @@
+﻿{
+  "language": "en_us",
+  "elements": [
+    {
+      "type": "Platform",
+      "name": "Platform",
+      "description": "Category: Platforms\n\nThis is a simple platform."
+    },
+    {
+      "type": "PlatformMoving",
+      "name": "Moving platform",
+      "description": "Category: Platforms\n\nThis platform moves between 2 different positions.\nSet its movement time with the menu and use the swap button to move the ending position"
+    },
+    {
+      "type": "PlatformTrampoline",
+      "name": "Trampoline Platform",
+      "description": "Category: Platforms\n\nThis platform will send players flying up when they touch it."
+    },
+    {
+      "type": "TrapBumper",
+      "name": "Bumper",
+      "description": "Category: Traps\n\nThis trap will send players in the opposite direction when they touch it."
+    },
+    {
+      "type": "TrapFan",
+      "name": "Fan",
+      "description": "Category: Traps\n\nThis trap will push the players away."
+    },
+    {
+      "type": "TrapThrower",
+      "name": "Thrower",
+      "description": "Category: Traps\n\nThis trap will shoot projectiles which bump the players away."
+    },
+    {
+      "type": "Checkpoint",
+      "name": "Checkpoint",
+      "description": "Category: Special Platforms\n\nA respawn point for falling players."
+    },
+    {
+      "type": "PlatformStart",
+      "name": "Start Platform",
+      "description": "Category: Special Platforms\n\nThe starting point of the race. You must have exactly one."
+    },
+    {
+      "type": "PlatformEnd",
+      "name": "End Platform",
+      "description": "Category: Special Platforms\n\nThe ending point of the race. You must have exactly one."
+    }
+  ]
+}
