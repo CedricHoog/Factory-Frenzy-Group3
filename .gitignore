@@ -13,7 +13,11 @@
 **/[Ll]ibrary/
 **/[Tt]emp/
 **/[Oo]bj/
+**/[Bb]uild/
+**/[Bb]uilds/
+**/[Ll]ogs/
 **/[Uu]ser[Ss]ettings/
+**/[Mm]emoryCaptures/
 *.log
 
 # Build/Builds/Logs are anchored to the first level (VR_Project/Builds/...) so that
