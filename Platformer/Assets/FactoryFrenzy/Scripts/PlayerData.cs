@@ -23,6 +23,19 @@ namespace FactoryFrenzy.Gameplay
             typeof(ThirdPersonController).GetField("_controller",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
+        private void Update()
+        {
+            if (!IsOwner || Keyboard.current == null) return;
+
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                bool locked = Cursor.lockState == CursorLockMode.Locked;
+                Cursor.lockState = locked ? CursorLockMode.None : CursorLockMode.Locked;
+                Cursor.visible = locked;
+                StarterInputs.cursorInputForLook = !locked;
+            }
+        }
+
         public override void OnNetworkSpawn()
         {
             ControllerField.SetValue(ThirdPersonController, GetComponent<CharacterController>());
@@ -36,8 +49,14 @@ namespace FactoryFrenzy.Gameplay
 
         public override void OnNetworkDespawn()
         {
-            if (IsOwner && NetworkManager != null && NetworkManager.SceneManager != null)
-                NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
+            if (IsOwner)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+
+                if (NetworkManager != null && NetworkManager.SceneManager != null)
+                    NetworkManager.SceneManager.OnLoadEventCompleted -= OnSceneLoaded;
+            }
         }
 
         private void OnSceneLoaded(string sceneName, LoadSceneMode mode,
@@ -66,6 +85,8 @@ namespace FactoryFrenzy.Gameplay
                     PlayerInput.enabled = true;
                     StarterInputs.enabled = true;
                     ThirdPersonController.enabled = true;
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
                     yield break;
                 }
                 yield return null;
