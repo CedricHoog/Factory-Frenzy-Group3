@@ -1,99 +1,94 @@
-abstract class GameElement
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+[Serializable]
+public abstract class GameElement
 {
     //Possible parameters : position, size, orientation, endingPosition, movementTime
     //force could also be added for PlatformTrampoline, Bumper. Thought it doesn't seems required.
 
-    private int id; //should be unique accross all game elements loaded. 
-    private string name; //used in tooltip and for some checks
-    private string description; //used in the tooltip. Is string adapted ???
-    private Vector3 position;
-    private Vector3 size; //might not be necessary or possible depending on the assets
-    private Vector3 orientation; //this could be reduced to only Y rotation for simplicity.
+    public int id; //should be unique accross all game elements loaded. 
 
-
-    //some function implementation could be done here
-    public setId(int id);
-    public int getId();
-
-    public setName(string name); // TODO ? is this necessary ? This should used be called when component is initialized
-    public string getName();
+    public Vector3 position;
+    public Vector3 size = Vector3.one;
+    public Vector3 rotation;
     
-    public setDescription(string description); // TODO ? is this necessary ? This should used be called when component is initialized
-    public string getDescription();
-
-    public setPosition(Vector3 position);
-    public Vector3 getPosition();
-
-    public setSize(Vector3 size);
-    public Vector3 getSize();
-
-    public setOrientation(Vector3 orientation);
-    public Vector3 getOrientation();
-
-    //a save function might also be necessary
+    public abstract string Name { get; }
+    public abstract string Description { get; }
 
 }
+
 /* All 9 Game Elements */
-class Platform : GameElement
+[Serializable]
+public class Platform : GameElement
 {
+    public override string Name => "Platform";
+    public override string Description => "Sample Descr.";
 }
 
-class PlatformMoving : GameElement
+[Serializable]
+public class PlatformMoving : GameElement
 {
-    //this element has extra parameters
-    private int movementTime;
-    private Vector3 endingPosition;
-
-    public setMovementTime(int movementTime);
-    public int getMovementTime();
-
-    public setEndingPosition(Vector3 endingPosition);
-    public Vector3 getEndingPosition();
+    public override string Name => "Moving platform";
+    public override string Description => "Sample Descr.";
+    public float movementTime = 2f;
+    public Vector3 endingPosition;
 }
 
-class PlatformTrampoline : GameElement
+[Serializable]
+public class PlatformTrampoline : GameElement
 {
     //we are not required to change the force so could go unused
-    private int force;
-    public setForce(int Force);
-    public int getForce();
+    public override string Name => "Trampoline Platform";
+    public override string Description => "Sample Descr.";
+    public float force = 10f;          // default value, so it can go unused
 }
 
-class TrapBumper : GameElement
+[Serializable]
+public class TrapBumper : GameElement
 {
-    //we are not required to change the force so could go unused
-    private int force;
-    public setForce(int Force);
-    public int getForce();
+    public override string Name => "Bumper";
+    public override string Description => "Sample Descr.";
+    public float force = 10f;          // default value, so it can go unused
 }
 
-class TrapFan : GameElement
+[Serializable]
+public class TrapFan : GameElement
 {
+    public override string Name => "Fan";
+    public override string Description => "Sample Descr.";
     //we are not required to change the force & activation zone so could go unused
-    private int force;
-    private Vector3 windZone;
-    public setForce(int Force);
-    public int getForce();
-    public setWindZone(Vector3 windZone);
-    public Vector3 getWindZone();
+    public float force = 10f;          // default value, so it can go unused
+    public Vector3 windZone = Vector3.one;          // default value, so it can go unused
 }
 
-class TrapThrower : GameElement
+[Serializable]
+public class TrapThrower : GameElement
 {
+    public override string Name => "Thrower";
+    public override string Description => "Sample Descr.";
     //we are not required to change the range so could go unused
-    private int range;
-    public setRange(int range);
-    public int getRange();
+    public float range = 10f;          // default value, so it can go unused
 }
 
-class Checkpoint : GameElement
+[Serializable]
+public class Checkpoint : GameElement
 {
+    public override string Name => "Checkpoint";
+    public override string Description => "Sample Descr.";
 }
 
-class PlatformStart : GameElement
+[Serializable]
+public class PlatformStart : GameElement
 {
+    public override string Name => "Start Platform";
+    public override string Description => "Sample Descr.";
 }
 
-class PlatformEnd : GameElement
+[Serializable]
+public class PlatformEnd : GameElement
 {
+    public override string Name => "End Platform";
+    public override string Description => "Sample Descr.";
 }
