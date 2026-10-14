@@ -2,6 +2,10 @@ public class GameElementManager : MonoBehaviour
 {
     public List<GameElement> gameElementList = new List<GameElement>();
     public int selectedGameElementId;
+    
+    //these 2 params are also used here to avoid extra steps
+    public string selectedGameElementName;
+    public string selectedGameElementDescription;
     /*
     In Unity, as an Inspector field:
 
@@ -23,6 +27,7 @@ public class GameElementManager : MonoBehaviour
     public void selectGameElement()
     {
     //TODO : need a function made to get an gameElement an put it in selectedGameElementId.
+    //(also set selectedGameElementName & selectedGameElementDescription for the tooltip)
     //When an item is selected, witch the UI from add element mode to modify element mode.
     //Some sections could be added/remove based on the name of the game element
     }
