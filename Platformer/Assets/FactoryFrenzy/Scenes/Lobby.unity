@@ -2210,6 +2210,71 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1001 &2915644423157314107
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2671707384185742617, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_InScenePlaced
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2671707384185742617, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 799072283
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8495110967135895675, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128623576425519809, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
+      propertyPath: m_Name
+      value: PlateformeTrampoline
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
 --- !u!1001 &3691767480153121845
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2450,3 +2515,4 @@ SceneRoots:
   - {fileID: 1535418863}
   - {fileID: 1493614083}
   - {fileID: 824715303}
+  - {fileID: 2915644423157314107}
