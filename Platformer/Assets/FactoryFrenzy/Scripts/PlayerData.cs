@@ -23,16 +23,31 @@ namespace FactoryFrenzy.Gameplay
             typeof(ThirdPersonController).GetField("_controller",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
+        private static readonly System.Reflection.FieldInfo VerticalVelocityField =
+            typeof(ThirdPersonController).GetField("_verticalVelocity",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        public void Bounce(float velocity)
+        {
+            if (!IsOwner) return;
+            VerticalVelocityField.SetValue(ThirdPersonController, velocity);
+        }
+
         private void Update()
         {
-            if (!IsOwner || Keyboard.current == null) return;
-
-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            if (!IsOwner || !ThirdPersonController.enabled)
             {
-                bool locked = Cursor.lockState == CursorLockMode.Locked;
-                Cursor.lockState = locked ? CursorLockMode.None : CursorLockMode.Locked;
-                Cursor.visible = locked;
-                StarterInputs.cursorInputForLook = !locked;
+                return;
+            }
+
+            bool locked = Cursor.lockState == CursorLockMode.Locked;
+
+            StarterInputs.cursorInputForLook = locked;
+
+            if (!locked && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
         }
 
