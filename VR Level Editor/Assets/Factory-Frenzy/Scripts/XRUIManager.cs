@@ -53,9 +53,14 @@ public class XRUIManager : MonoBehaviour
         GetTargetPose(out Vector3 position, out Quaternion rotation);
 
         if (instance == null)
+        {
+            // Overload with parent: position/rotation are treated as WORLD values
             instance = Instantiate(xrUIPrefab, position, rotation);
+        }
         else
+        {
             instance.transform.SetPositionAndRotation(position, rotation);
+        }
     }
 
     public void DestroyXRUI()
