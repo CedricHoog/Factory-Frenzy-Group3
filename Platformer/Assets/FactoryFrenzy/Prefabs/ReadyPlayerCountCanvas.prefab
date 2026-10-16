@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3755785345985272467}
   - component: {fileID: 635699674972992565}
   - component: {fileID: 3719041987427377497}
+  - component: {fileID: 6095917961447702776}
   m_Layer: 5
   m_Name: ReadyPlayerCountCanvas
   m_TagString: Untagged
@@ -103,6 +104,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6095917961447702776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 792828225433013403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b5505329a029a94baf0bf261d892722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LobbyReadyUI
+  readyText: {fileID: 1600097472470624762}
 --- !u!1 &1821176899093465979
 GameObject:
   m_ObjectHideFlags: 0
@@ -521,7 +535,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Ready Players : 0 / 1'
+  m_text: 'Ready Players : 0 / 0'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
