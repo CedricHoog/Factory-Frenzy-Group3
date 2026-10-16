@@ -22,7 +22,7 @@ public class Trampoline : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var player = other.GetComponentInParent<PlayerData>();
+        var player = other.GetComponentInParent<PlayerBounce>();
         if (player == null || !player.IsOwner) return;
 
         player.Bounce(bounceVelocity);
