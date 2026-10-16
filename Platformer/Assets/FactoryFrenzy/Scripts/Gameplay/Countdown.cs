@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LobbyCountdown : NetworkBehaviour
+public class Countdown : NetworkBehaviour
 {
     [SerializeField] private GameObject countdownCanvas;
     [SerializeField] private TMP_Text countdownText;
@@ -68,10 +68,11 @@ public class LobbyCountdown : NetworkBehaviour
         }
 
         _secondsLeft.Value = 0;
-        countdownCanvas.SetActive(false);
+        yield return new WaitForSeconds(0.5f); // Petit délai pour la transition visuelle
+        _secondsLeft.Value = -1; // Déclenche UpdateUI et SetActive(false) partout
+
         if (!GameState.GameStarted)
         {
-            Debug.Log(GameState.GameStarted);
             NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         }
     }

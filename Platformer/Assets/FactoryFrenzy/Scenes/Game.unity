@@ -854,7 +854,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   countdownCanvas: {fileID: 1967432338}
   countdownText: {fileID: 1967432337}
-  duration: 5
+  duration: 3
 --- !u!114 &715219404
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1263,6 +1263,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameStartCountdownCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5136322964052352043, guid: 542b263c52a9dd241910d0cfe4d125d9, type: 3}
+      propertyPath: m_text
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5340246273107250884, guid: 542b263c52a9dd241910d0cfe4d125d9, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1422,7 +1426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameStart
   ShowTopMostFoldoutHeaderGroup: 1
-  waitingDuration: 5
+  waitingDuration: 3
 --- !u!4 &1990698114
 Transform:
   m_ObjectHideFlags: 0
