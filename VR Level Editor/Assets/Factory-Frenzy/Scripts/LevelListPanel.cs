@@ -14,7 +14,7 @@ public class LevelListPanel : MonoBehaviour
 
     //private string Folder => Path.Combine(Application.persistentDataPath, "levels"); //FIXME THIS SHOULD BE CLEANER IN A FULL RELEASE
     //TODO USE A LEVEL STORAGE SCRIPT IN SHARED ASSETS INSTEAD OF HARDCODING IT
-    private string Folder => @"..\..\..\Packages\factory.frenzy.shared\levels";
+    private string Folder => @"..\Shared Assets\levels";
 
     private void OnEnable() => Refresh();
 
@@ -22,10 +22,19 @@ public class LevelListPanel : MonoBehaviour
     {
         foreach (Transform child in content) Destroy(child.gameObject);
 
-        Directory.CreateDirectory(Folder);
-        var files = Directory.GetFiles(Folder, "*.json")
-                             .OrderByDescending(File.GetLastWriteTime)   // newest first
+        string[] files = new string[0];
+
+        if (Directory.Exists(Folder))
+        {
+            files = Directory.GetFiles(Folder, "*.json")
+                             .OrderByDescending(File.GetLastWriteTime)
                              .ToArray();
+        }
+        else
+        {
+            Debug.LogWarning($"Levels folder not found: {Path.GetFullPath(Folder)}");
+        }
+
 
         if (emptyText != null) emptyText.gameObject.SetActive(files.Length == 0);
 
