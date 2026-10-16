@@ -68,8 +68,8 @@ public class LobbyCountdown : NetworkBehaviour
         }
 
         _secondsLeft.Value = 0;
-        // Étape suivante : changement de scène ici
-        SceneManager.LoadScene("Game");
+        GameState.GameStarted = true;
+        NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
     }
 
     private void OnSecondsChanged(int oldValue, int newValue) => UpdateUI(newValue);
