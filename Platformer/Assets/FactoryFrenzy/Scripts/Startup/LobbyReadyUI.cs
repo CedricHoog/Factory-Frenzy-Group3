@@ -20,6 +20,6 @@ public class LobbyReadyUI : MonoBehaviour
         foreach (var p in PlayerData.All)
             if (p.IsReady.Value) ready++;
 
-        readyText.text = $"Ready Players : {ready} / {PlayerData.All.Count}";
+        readyText.text = $"Players Ready : {ready} / {PlayerData.All.Count}";
     }
 }
