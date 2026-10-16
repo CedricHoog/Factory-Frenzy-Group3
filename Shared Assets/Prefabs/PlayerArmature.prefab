@@ -1041,6 +1041,9 @@ GameObject:
   - component: {fileID: 1920676901479408410}
   - component: {fileID: -8697320503476544717}
   - component: {fileID: -4725958823035317489}
+  - component: {fileID: -7153049228010930591}
+  - component: {fileID: -482340972499787721}
+  - component: {fileID: 1594062807342565595}
   m_Layer: 8
   m_Name: PlayerArmature
   m_TagString: Player
@@ -1380,7 +1383,7 @@ MonoBehaviour:
   PlayerInput: {fileID: 4416926081852918493}
   StarterInputs: {fileID: 135756642000475821}
   ThirdPersonController: {fileID: 4416926081852918490}
-  CameraRoot: {fileID: 8338988566280778637}
+  CursorLock: {fileID: -7153049228010930591}
 --- !u!114 &-4725958823035317489
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1421,6 +1424,50 @@ MonoBehaviour:
       Synchronize: 1
       ParameterType: 1
   AnimatorParametersExpanded: 0
+--- !u!114 &-7153049228010930591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51937fa25c7c5e6459a6a7958fc5a9ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryFrenzy.Gameplay.PlayerCursorLock
+  ShowTopMostFoldoutHeaderGroup: 1
+  inputs: {fileID: 135756642000475821}
+--- !u!114 &-482340972499787721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f8172e17777a241bd5c9191e926698, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryFrenzy.Gameplay.PlayerLocalSetup
+  ShowTopMostFoldoutHeaderGroup: 1
+  playerData: {fileID: -8697320503476544717}
+  thirdPersonController: {fileID: 4416926081852918490}
+  cameraRoot: {fileID: 8338988566280778637}
+--- !u!114 &1594062807342565595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4416926081852918481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a277c0b465821a94db111d2cc17f7ee4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryFrenzy.Gameplay.PlayerBounce
+  ShowTopMostFoldoutHeaderGroup: 1
+  thirdPersonController: {fileID: 4416926081852918490}
 --- !u!1 &4523139366846529165
 GameObject:
   m_ObjectHideFlags: 0
