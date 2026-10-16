@@ -44,7 +44,6 @@ public class PlayerSpawnManager : NetworkBehaviour
     {
         ulong clientId = rpcParams.Receive.SenderClientId;
 
-        // Sécurité : plus de place, ou client déjà servi
         if (_freePoints.Count == 0 || _assigned.ContainsKey(clientId))
             return;
 
