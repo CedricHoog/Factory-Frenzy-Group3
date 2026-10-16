@@ -7,13 +7,17 @@ using UnityEngine.SceneManagement;
 
 public class GameStart : NetworkBehaviour
 {
-    [SerializeField] private float waitingDuration = 3f;
+    [SerializeField] private float waitingDuration = 5f;
 
     private readonly NetworkVariable<bool> _frozen = new(
         false,
         NetworkVariableReadPermission.Everyone,
         NetworkVariableWritePermission.Server);
 
+    public void Start()
+    {
+        GameState.GameStarted = true;
+    }
     public override void OnNetworkSpawn()
     {
         _frozen.OnValueChanged += OnFrozenChanged;

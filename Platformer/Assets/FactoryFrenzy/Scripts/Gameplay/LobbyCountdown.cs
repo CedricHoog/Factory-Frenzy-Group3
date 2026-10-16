@@ -68,8 +68,12 @@ public class LobbyCountdown : NetworkBehaviour
         }
 
         _secondsLeft.Value = 0;
-        GameState.GameStarted = true;
-        NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+        countdownCanvas.SetActive(false);
+        if (!GameState.GameStarted)
+        {
+            Debug.Log(GameState.GameStarted);
+            NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
+        }
     }
 
     private void OnSecondsChanged(int oldValue, int newValue) => UpdateUI(newValue);
