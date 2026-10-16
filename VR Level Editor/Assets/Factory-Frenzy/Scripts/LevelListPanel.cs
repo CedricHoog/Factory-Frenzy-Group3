@@ -6,15 +6,13 @@ using UnityEngine.UI;
 
 public class LevelListPanel : MonoBehaviour
 {
-    [SerializeField] private Transform content;      // the ScrollView's Content
+    [SerializeField] private Transform content;
     [SerializeField] private Button rowPrefab;
     [SerializeField] private TMP_Text emptyText;
 
     public System.Action<string> OnLevelSelected;    // full path of the file
 
-    //private string Folder => Path.Combine(Application.persistentDataPath, "levels"); //FIXME THIS SHOULD BE CLEANER IN A FULL RELEASE
-    //TODO USE A LEVEL STORAGE SCRIPT IN SHARED ASSETS INSTEAD OF HARDCODING IT
-    private string Folder => @"..\Shared Assets\levels";
+    private string Folder => SharedPaths.Levels;
 
     private void OnEnable() => Refresh();
 
