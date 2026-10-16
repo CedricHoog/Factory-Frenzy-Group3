@@ -1,8 +1,9 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
-using StarterAssets;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace FactoryFrenzy.Gameplay
@@ -12,6 +13,11 @@ namespace FactoryFrenzy.Gameplay
         [SerializeField] private PlayerData playerData;
         [SerializeField] private ThirdPersonController thirdPersonController;
         [SerializeField] private Transform cameraRoot;
+        [SerializeField] private PlayerInput playerInput;
+        [SerializeField] private StarterAssetsInputs starterInputs;
+        [SerializeField] private PlayerCursorLock cursorLock;
+        [SerializeField] private PlayerReadyInput readyInput;
+        [SerializeField] private PlayerMovementLock movementLock;
 
         private static readonly System.Reflection.FieldInfo MainCameraField =
             typeof(ThirdPersonController).GetField("_mainCamera",
@@ -58,7 +64,11 @@ namespace FactoryFrenzy.Gameplay
 
                     MainCameraField.SetValue(thirdPersonController, mainCam.gameObject);
 
-                    playerData.EnableLocalControl();
+                    playerInput.enabled = true;
+                    starterInputs.enabled = true;
+                    cursorLock.enabled = true;
+                    readyInput.enabled = true;
+                    movementLock.MarkReady();
                     yield break;
                 }
                 yield return null;

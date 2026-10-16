@@ -1,19 +1,11 @@
 using System;
 using System.Collections.Generic;
-using StarterAssets;
 using Unity.Netcode;
-using UnityEngine.InputSystem;
 
 namespace FactoryFrenzy.Gameplay
 {
     public class PlayerData : NetworkBehaviour
     {
-        public PlayerInput PlayerInput;
-        public StarterAssetsInputs StarterInputs;
-        public ThirdPersonController ThirdPersonController;
-        public PlayerCursorLock CursorLock;
-        public PlayerReadyInput ReadyInput;
-
         public NetworkVariable<bool> IsReady = new(
             false,
             NetworkVariableReadPermission.Everyone,
@@ -37,17 +29,6 @@ namespace FactoryFrenzy.Gameplay
         }
 
         private void OnReadyChanged(bool oldValue, bool newValue) => OnPlayersChanged?.Invoke();
-
-        public void EnableLocalControl()
-        {
-            if (!IsOwner) return;
-
-            PlayerInput.enabled = true;
-            StarterInputs.enabled = true;
-            ThirdPersonController.enabled = true;
-            CursorLock.enabled = true;
-            ReadyInput.enabled = true;
-        }
 
         [Rpc(SendTo.Server)]
         public void ToggleReadyRpc()
