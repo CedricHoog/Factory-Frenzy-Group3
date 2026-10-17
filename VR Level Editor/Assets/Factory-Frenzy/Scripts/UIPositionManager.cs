@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
-public class XRUIManager : MonoBehaviour
+public class UIPositionManager : MonoBehaviour
 {
     [FormerlySerializedAs("XRUI")]
     [SerializeField] private GameObject xrUIPrefab;
