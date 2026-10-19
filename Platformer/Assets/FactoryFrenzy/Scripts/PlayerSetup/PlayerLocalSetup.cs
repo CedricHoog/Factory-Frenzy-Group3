@@ -1,6 +1,9 @@
+using FactoryFrenzy.UI;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -18,6 +21,12 @@ namespace FactoryFrenzy.Gameplay
         [SerializeField] private PlayerCursorLock cursorLock;
         [SerializeField] private PlayerReadyInput readyInput;
         [SerializeField] private PlayerMovementLock movementLock;
+        public TMP_Text PseudoText;
+
+        public NetworkVariable<FixedString32Bytes> PlayerPseudo = new(
+           default,
+           NetworkVariableReadPermission.Everyone,
+           NetworkVariableWritePermission.Owner);
 
         private static readonly System.Reflection.FieldInfo MainCameraField =
             typeof(ThirdPersonController).GetField("_mainCamera",
@@ -29,12 +38,19 @@ namespace FactoryFrenzy.Gameplay
 
         public override void OnNetworkSpawn()
         {
+            PseudoText.text = PlayerPseudo.Value.ToString();
+            PlayerPseudo.OnValueChanged += (oldValue, newValue) =>
+                PseudoText.text = newValue.ToString();
+
             ControllerField.SetValue(thirdPersonController, GetComponent<CharacterController>());
 
-            if (!IsOwner) return;
+            if (!IsOwner)
+            {
+                return;
+            }
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
-            StartCoroutine(SetupCameraRoutine());
+            StartCoroutine(SetupPlayer());
         }
 
         public override void OnNetworkDespawn()
@@ -47,10 +63,10 @@ namespace FactoryFrenzy.Gameplay
             List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
         {
             StopAllCoroutines();
-            StartCoroutine(SetupCameraRoutine());
+            StartCoroutine(SetupPlayer());
         }
 
-        private IEnumerator SetupCameraRoutine()
+        private IEnumerator SetupPlayer()
         {
             for (int i = 0; i < 300; i++)
             {
@@ -68,6 +84,8 @@ namespace FactoryFrenzy.Gameplay
                     starterInputs.enabled = true;
                     cursorLock.enabled = true;
                     readyInput.enabled = true;
+                    PlayerPseudo.Value = MainMenu.Pseudo;
+                    PseudoText.gameObject.SetActive(false);
                     movementLock.MarkReady();
                     yield break;
                 }
