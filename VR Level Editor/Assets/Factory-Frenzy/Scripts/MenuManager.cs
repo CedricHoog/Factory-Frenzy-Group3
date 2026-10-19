@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
@@ -8,17 +9,30 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] private GameObject confirmExitCanvas;
     [SerializeField] private GameObject confirmOverwriteCanvas;
+    
+    [SerializeField] private GameObject addElementPanel;
+    [SerializeField] private GameObject modifyElementPanel;
+    
+    [SerializeField] private Button swapButton;
 
     void Start() => ShowElementMenu();
 
-    public void ShowElementMenu() => Show(elementMenuCanvas);
-    public void ShowSaveMenu() => Show(saveMenuCanvas);
-    public void ShowLoadMenu() => Show(loadMenuCanvas);
+    public void ShowElementMenu() => ShowCanvas(elementMenuCanvas);
+    public void ShowSaveMenu() => ShowCanvas(saveMenuCanvas);
+    public void ShowLoadMenu() => ShowCanvas(loadMenuCanvas);
 
-    public void ShowConfirmExitMenu() => Show(confirmExitCanvas);
-    public void ShowConfirmOverwriteMenu() => Show(confirmOverwriteCanvas);
+    public void ShowConfirmExitMenu() => ShowCanvas(confirmExitCanvas);
+    public void ShowConfirmOverwriteMenu() => ShowCanvas(confirmOverwriteCanvas);
 
-    private void Show(GameObject target)
+    public void ShowAddElementPanel() => ShowPanel(true);
+    public void ShowModifyElementPanel() => ShowPanel(false);
+    
+    public void ActivateSwapButton() => SetInteractableSwapButton(true);
+    public void DeactivateSwapButton() => SetInteractableSwapButton(false);
+    
+    
+
+    private void ShowCanvas(GameObject target)
     {
         elementMenuCanvas.SetActive(target == elementMenuCanvas);
         saveMenuCanvas.SetActive(target == saveMenuCanvas);
@@ -26,5 +40,18 @@ public class MenuManager : MonoBehaviour
 
         confirmExitCanvas.SetActive(target == confirmExitCanvas);
         confirmOverwriteCanvas.SetActive(target == confirmOverwriteCanvas);
+    }
+    
+    private void ShowPanel(bool addMode)
+    {
+        if (addMode) SetInteractableSwapButton(false);
+        addElementPanel.SetActive(addMode);
+        modifyElementPanel.SetActive(!addMode);
+
+    }
+
+    private void SetInteractableSwapButton(bool activated)
+    {
+        swapButton.interactable = activated;
     }
 }
