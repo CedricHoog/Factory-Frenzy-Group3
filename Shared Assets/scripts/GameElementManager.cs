@@ -17,6 +17,8 @@ File.WriteAllText(path, JsonUtility.ToJson(level, true));
 level = JsonUtility.FromJson<LevelData>(File.ReadAllText(path));
 */
 
+
+
 public class GameElementManager : MonoBehaviour
 {
     public List<GameElement> gameElementList = new List<GameElement>();
@@ -40,12 +42,29 @@ public class GameElementManager : MonoBehaviour
         //TODO fill gameElementList with the json file. Might need to add check for valid elements.
     }
 
+    /*
     public void SelectGameElement()
     {
     //TODO : need a function made to get an gameElement an put it in selectedGameElementId.
     //(also set selectedGameElementName & selectedGameElementDescription for the tooltip)
     //When an item is selected, witch the UI from add element mode to modify element mode.
     //Some sections could be added/remove based on the name of the game element
+    }*/
+    
+    public event Action<GameElement> OnSelectionChanged;
+    public GameElement SelectedElement { get; private set; }
+
+    public void SelectGameElement(int id)
+    {
+        SelectedElement = gameElementList.Find(e => e.id == id);
+        selectedGameElementId = id;
+        OnSelectionChanged?.Invoke(SelectedElement);   // null if the id wasn't found
+    }
+
+    public void ClearSelection()
+    {
+        SelectedElement = null;
+        OnSelectionChanged?.Invoke(null);
     }
 
     public void ToggleUIMode()
@@ -55,7 +74,7 @@ public class GameElementManager : MonoBehaviour
     //also check selectedGameElementId for some values
     }
 
-    public void CreateGameElement()
+    public void CreateGameElement(string elementName)
     {
         //TODO create a game element based on what is clicked in the UI. also think about where to position it. Probably not 0,0,0.
         //id needs to be unique
