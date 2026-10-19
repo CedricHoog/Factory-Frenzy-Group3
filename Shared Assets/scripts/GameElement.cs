@@ -8,7 +8,18 @@
     public static class GameElementTexts
     {
         static Dictionary<string, ElementText> map;
-        //TODO DONT FORGET TO LOAD THIS ON STARTUP
+        public static ElementText Get(Type t) => Get(t.Name);
+
+        public static ElementText Get(string typeName)
+        {
+            if (map == null) Load();
+            if (!map.TryGetValue(typeName, out var text))
+            {
+                Debug.LogError($"No text for element '{typeName}' in the JSON.");
+                return new ElementText { type = typeName, name = typeName, description = "" };
+            }
+            return text;
+        }
 
         public static void Load(string lang = "en_us")
         {
@@ -17,8 +28,6 @@
             map = new();
             foreach (var e in data.elements) map[e.type] = e;
         }
-
-        public static ElementText Get(Type t) => map[t.Name];
     }
 
     [Serializable]
