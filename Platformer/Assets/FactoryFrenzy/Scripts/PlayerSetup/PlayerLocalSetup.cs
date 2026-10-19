@@ -1,6 +1,9 @@
+using FactoryFrenzy.UI;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -34,7 +37,7 @@ namespace FactoryFrenzy.Gameplay
             if (!IsOwner) return;
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
-            StartCoroutine(SetupCameraRoutine());
+            StartCoroutine(SetupPlayer());
         }
 
         public override void OnNetworkDespawn()
@@ -47,10 +50,10 @@ namespace FactoryFrenzy.Gameplay
             List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
         {
             StopAllCoroutines();
-            StartCoroutine(SetupCameraRoutine());
+            StartCoroutine(SetupPlayer());
         }
 
-        private IEnumerator SetupCameraRoutine()
+        private IEnumerator SetupPlayer()
         {
             for (int i = 0; i < 300; i++)
             {
@@ -68,6 +71,7 @@ namespace FactoryFrenzy.Gameplay
                     starterInputs.enabled = true;
                     cursorLock.enabled = true;
                     readyInput.enabled = true;
+                    playerData.PlayerPseudo.Value = MainMenu.Pseudo;
                     movementLock.MarkReady();
                     yield break;
                 }
