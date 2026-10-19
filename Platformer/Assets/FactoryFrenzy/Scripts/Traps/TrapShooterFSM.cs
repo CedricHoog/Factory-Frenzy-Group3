@@ -53,6 +53,20 @@ public class TrapShooterFSM : MonoBehaviour
 
 
     // ==========================================
+    // ACTIVATION TIMER - NEW
+    // ==========================================
+
+    [Header("Activation Settings")]
+
+    [Tooltip("Delay in seconds before the turret activates.")]
+    [SerializeField, Min(0f)]
+    private float activationDelay = 5f;
+
+    // Time when the turret can start working.
+    private float activationTime;
+
+
+    // ==========================================
     // DETECTION
     // ==========================================
 
@@ -135,11 +149,9 @@ public class TrapShooterFSM : MonoBehaviour
 
     private Transform currentTarget;
 
-    // Players currently inside detection radius.
     private readonly HashSet<Transform> playersInRange =
         new HashSet<Transform>();
 
-    // Keep track of the order players enter the zone.
     private readonly Dictionary<Transform, long> entryOrder =
         new Dictionary<Transform, long>();
 
@@ -157,14 +169,14 @@ public class TrapShooterFSM : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();
 
-        // Automatically find shot effects if needed.
+        // Automatically find visual effects.
         if (shotEffects == null)
         {
             shotEffects =
                 GetComponent<TurretShotEffects>();
         }
 
-        // Check required references.
+        // Verify required references.
         if (rotationPivot == null || firePoint == null)
         {
             Debug.LogError(
@@ -199,11 +211,59 @@ public class TrapShooterFSM : MonoBehaviour
 
 
     // ==========================================
+    // ACTIVATION TIMER - NEW
+    // ==========================================
+
+    private void OnEnable()
+    {
+        // The turret becomes active after the delay.
+        activationTime =
+            Time.time + Mathf.Max(0f, activationDelay);
+
+        // Reset current targeting.
+        currentTarget = null;
+
+        currentState = TurretState.Search;
+
+        playersInRange.Clear();
+        entryOrder.Clear();
+        playersToRemove.Clear();
+
+        nextEntryNumber = 0;
+
+        // Reset shooting cooldown.
+        nextShotTime = activationTime;
+    }
+
+
+    // ==========================================
     // MAIN FSM UPDATE
     // ==========================================
 
     private void Update()
     {
+        // ======================================
+        // ACTIVATION DELAY - NEW
+        // ======================================
+
+        // While the timer is running:
+        // - No player detection
+        // - No turret rotation
+        // - No projectile firing
+        // - No shot effects
+        // - No shooting sound
+
+        if (Time.time < activationTime)
+        {
+            currentState = TurretState.Search;
+            return;
+        }
+
+
+        // ======================================
+        // NORMAL TURRET BEHAVIOUR
+        // ======================================
+
         // Detect nearby players.
         DetectPlayers();
 
@@ -301,7 +361,6 @@ public class TrapShooterFSM : MonoBehaviour
 
     private void SearchForPlayers()
     {
-        // Search limit on one side.
         Quaternion searchLimit =
             Quaternion.AngleAxis(
                 searchDirection * searchAngle,
@@ -316,7 +375,7 @@ public class TrapShooterFSM : MonoBehaviour
                 searchSpeed * Time.deltaTime
             );
 
-        // Reverse search direction at limit.
+        // Reverse direction at search limit.
         if (Quaternion.Angle(
             rotationPivot.rotation,
             searchLimit
@@ -361,7 +420,7 @@ public class TrapShooterFSM : MonoBehaviour
             }
         }
 
-        // Remove players that left detection range.
+        // Remove players that left the zone.
         playersToRemove.Clear();
 
         foreach (var entry in entryOrder)
@@ -448,7 +507,7 @@ public class TrapShooterFSM : MonoBehaviour
             return playerCollider.bounds.center;
         }
 
-        // Fallback when the player has no collider.
+        // Fallback when no collider is available.
         return player.position + Vector3.up;
     }
 
@@ -463,6 +522,7 @@ public class TrapShooterFSM : MonoBehaviour
         {
             return;
         }
+
 
         // ======================================
         // 1. CALCULATE SHOT DIRECTION
@@ -514,11 +574,11 @@ public class TrapShooterFSM : MonoBehaviour
             verticalLaunch
         );
 
-        // The projectile now handles:
+        // The projectile handles:
         // - Movement
         // - Collision detection
-        // - Player knockback on impact
-        // - Impact particle effect
+        // - Player knockback
+        // - Impact particles
         // - Automatic destruction
 
 
@@ -528,10 +588,9 @@ public class TrapShooterFSM : MonoBehaviour
 
         if (shotEffects != null)
         {
-            // Triggers:
-            // - Muzzle Flash
-            // - Cannon Recoil
-            // - Smoke
+            // Muzzle Flash
+            // Cannon Recoil
+            // Smoke
 
             shotEffects.PlayShot();
         }
