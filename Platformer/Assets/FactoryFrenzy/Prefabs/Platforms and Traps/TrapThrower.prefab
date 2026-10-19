@@ -5113,7 +5113,7 @@ MonoBehaviour:
   shotEffects: {fileID: 5486561549734903105}
   projectilePrefab: {fileID: 2230590970671158076, guid: 331b689583dde6d4ab95b7b316b48432, type: 3}
   spawnOffset: 0.35
-  activationDelay: 10
+  activationDelay: 5
   detectionRadius: 12
   searchAngle: 70
   searchSpeed: 50
