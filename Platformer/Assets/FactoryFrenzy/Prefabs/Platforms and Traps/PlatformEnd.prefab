@@ -381,7 +381,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5749138802247232635}
   m_Layer: 0
-  m_Name: PlateformeFin
+  m_Name: PlatformEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
