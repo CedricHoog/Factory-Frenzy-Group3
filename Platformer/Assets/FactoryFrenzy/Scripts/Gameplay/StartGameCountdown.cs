@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Countdown : NetworkBehaviour
+public class StartGameCountdown : NetworkBehaviour
 {
     [SerializeField] private GameObject countdownCanvas;
     [SerializeField] private TMP_Text countdownText;
@@ -68,8 +68,8 @@ public class Countdown : NetworkBehaviour
         }
 
         _secondsLeft.Value = 0;
-        yield return new WaitForSeconds(0.5f); // Petit délai pour la transition visuelle
-        _secondsLeft.Value = -1; // Déclenche UpdateUI et SetActive(false) partout
+        yield return new WaitForSeconds(0.5f);
+        _secondsLeft.Value = -1;
 
         if (!GameState.GameStarted)
         {
