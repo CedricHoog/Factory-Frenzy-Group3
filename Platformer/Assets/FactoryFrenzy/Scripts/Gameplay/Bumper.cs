@@ -7,7 +7,7 @@ public class Bumper : NetworkBehaviour
 {
     [SerializeField] private float bumpVelocity = 5f; //currently half as bounce from trampoline
 
-    [SerializeField] private Transform target;
+    private Transform target;
     [SerializeField] private float stretchMultiplier = 2f; //TODO TEST (and check if no issue with mesh collider
     [SerializeField] private float stretchDuration = 0.2f;
     
@@ -22,14 +22,13 @@ public class Bumper : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("OnTriggerEnter called");
         var player = other.GetComponentInParent<PlayerBump>();
-        Debug.Log($"{player}"); //can't find my player lmao
         if (player == null || !player.IsOwner) return;
-
+    
         Vector3 bumpDirection = (other.ClosestPoint(transform.position) - transform.position).normalized; //TODO CHECK this allowed ?
         player.Bump(bumpDirection,bumpVelocity);
-        Debug.Log($"{bumpDirection}");
+        /*bumpDirection = new Vector3(1, 1, 1);
+        player.GetComponentInParent<Rigidbody>().AddForce(bumpDirection*bumpVelocity);*/
         PlayAnimRpc();
     }
 
@@ -43,7 +42,7 @@ public class Bumper : NetworkBehaviour
     private IEnumerator StretchAndReturn()
     {
         float bot = target.localScale.z;
-        float top = _baseScale.z * stretchMultiplier;
+        float top = _baseScale.z * stretchMultiplier; //FIXME
 
         for (float t = 0f; t < 1f; t += Time.deltaTime / stretchDuration / 2)
         {

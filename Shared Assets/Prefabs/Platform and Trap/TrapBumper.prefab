@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4175287436
+  GlobalObjectIdHash: 1180189974
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -303,6 +303,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bumper
   ShowTopMostFoldoutHeaderGroup: 1
   bumpVelocity: 20
-  target: {fileID: 0}
   stretchMultiplier: 1
   stretchDuration: 0.2
