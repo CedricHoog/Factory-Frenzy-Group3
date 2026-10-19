@@ -5,7 +5,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class StartGameCountdown : NetworkBehaviour
+public class LobbyCountdown : NetworkBehaviour
 {
     [SerializeField] private GameObject countdownCanvas;
     [SerializeField] private TMP_Text countdownText;

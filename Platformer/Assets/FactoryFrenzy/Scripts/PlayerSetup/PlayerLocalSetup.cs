@@ -21,12 +21,6 @@ namespace FactoryFrenzy.Gameplay
         [SerializeField] private PlayerCursorLock cursorLock;
         [SerializeField] private PlayerReadyInput readyInput;
         [SerializeField] private PlayerMovementLock movementLock;
-        public TMP_Text PseudoText;
-
-        public NetworkVariable<FixedString32Bytes> PlayerPseudo = new(
-           default,
-           NetworkVariableReadPermission.Everyone,
-           NetworkVariableWritePermission.Owner);
 
         private static readonly System.Reflection.FieldInfo MainCameraField =
             typeof(ThirdPersonController).GetField("_mainCamera",
@@ -38,16 +32,9 @@ namespace FactoryFrenzy.Gameplay
 
         public override void OnNetworkSpawn()
         {
-            PseudoText.text = PlayerPseudo.Value.ToString();
-            PlayerPseudo.OnValueChanged += (oldValue, newValue) =>
-                PseudoText.text = newValue.ToString();
-
             ControllerField.SetValue(thirdPersonController, GetComponent<CharacterController>());
 
-            if (!IsOwner)
-            {
-                return;
-            }
+            if (!IsOwner) return;
 
             NetworkManager.SceneManager.OnLoadEventCompleted += OnSceneLoaded;
             StartCoroutine(SetupPlayer());
@@ -84,8 +71,7 @@ namespace FactoryFrenzy.Gameplay
                     starterInputs.enabled = true;
                     cursorLock.enabled = true;
                     readyInput.enabled = true;
-                    PlayerPseudo.Value = MainMenu.Pseudo;
-                    PseudoText.gameObject.SetActive(false);
+                    playerData.PlayerPseudo.Value = MainMenu.Pseudo;
                     movementLock.MarkReady();
                     yield break;
                 }
