@@ -232,7 +232,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2237043999193494989}
   m_Layer: 0
-  m_Name: PlateformeDebut
+  m_Name: PlatformStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

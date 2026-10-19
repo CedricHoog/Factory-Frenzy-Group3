@@ -4976,7 +4976,7 @@ GameObject:
   - component: {fileID: 4600329776424339927}
   - component: {fileID: 5486561549734903105}
   m_Layer: 0
-  m_Name: Trap shooter
+  m_Name: TrapThrower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
