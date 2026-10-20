@@ -106,5 +106,49 @@ public class GameElementManager : MonoBehaviour
             ClearSelection();
     }
 
+    /*
+    public void DeleteSelectedGameElement()
+    {
+        DeleteGameElement(selectedGameElementId);
+    }
+    */
+    
+    
+    public void ToggleLockGameElement()
+    {
+        //TODO for FP2-2, could be in another file
+        /*GetComponent<XRGrabInteractable>().trackPosition = mode;
+        GetComponent<XRGrabInteractable>().trackRotation = mode;
+        GetComponent<XRGrabInteractable>().trackScale = mode;*/
+    }
+    
+    public void SwapMovingPlatform()
+    {
+        //TODO Implement
+    }
+    
+
+
+    public void InteractionUtil(string buttonName)
+    {
+        if (buttonName == "lock")
+        {
+            ToggleLockGameElement();
+        }
+        else if (buttonName == "swap")
+        {
+            SwapMovingPlatform();
+        }
+        else if (buttonName == "delete")
+        {
+            Debug.Log($"deleting Game Element {selectedGameElementId}");
+            DeleteGameElement(selectedGameElementId); //use DeleteSelectedGameElement if this is used elsewhere
+        }
+        else
+        {
+            Debug.LogError($" {buttonName} : Unknown button name");
+        }
+    }
+    
     public ElementView GetView(int id) => views.TryGetValue(id, out var v) ? v : null;
 }
