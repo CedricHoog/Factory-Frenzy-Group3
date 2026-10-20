@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class Trampoline : NetworkBehaviour
 {
-    [SerializeField] private float bounceVelocity = 10f;
-
     [SerializeField] private Transform target;
     [SerializeField] private float stretchMultiplier = 2f;
     [SerializeField] private float stretchDuration = 0.2f;
@@ -20,12 +18,22 @@ public class Trampoline : NetworkBehaviour
         _baseScale = target.localScale;
     }
 
+    [SerializeField] private float bounceVelocity = 10f;
+
     private void OnTriggerEnter(Collider other)
     {
-        var player = other.GetComponentInParent<PlayerBounce>();
+        var player = other.GetComponentInParent<PlayerData>();
         if (player == null || !player.IsOwner) return;
 
-        player.Bounce(bounceVelocity);
+        var rb = player.GetComponent<Rigidbody>();
+        if (rb == null) return;
+
+        Vector3 v = rb.linearVelocity;
+        v.y = 0f;
+        rb.linearVelocity = v;
+
+        rb.AddForce(Vector3.up * bounceVelocity, ForceMode.VelocityChange);
+
         PlayAnimRpc();
     }
 
