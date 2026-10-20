@@ -5,14 +5,19 @@ using UnityEngine;
 
 public class Bumper : NetworkBehaviour
 {
-    [SerializeField] private float bumpVelocity = 5f; //currently half as bounce from trampoline
+    [Header("Poussée")]
+    [SerializeField] private float bumpForce = 8f;     // vitesse horizontale en m/s
+    [SerializeField] private float upwardBoost = 2f;   // petit saut pour décoller du sol
+    [SerializeField] private float cooldown = 0.3f;
 
-    private Transform target;
-    [SerializeField] private float stretchMultiplier = 2f; //TODO TEST (and check if no issue with mesh collider
+    [Header("Animation (étirement en Z)")]
+    [SerializeField] private Transform target;
+    [SerializeField] private float stretchMultiplier = 1.3f;
     [SerializeField] private float stretchDuration = 0.2f;
-    
+
     private Coroutine _anim;
     private Vector3 _baseScale;
+    private float _lastBump;
 
     private void Awake()
     {
@@ -20,15 +25,29 @@ public class Bumper : NetworkBehaviour
         _baseScale = target.localScale;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) => TryBump(other);
+
+    private void TryBump(Collider other)
     {
-        var player = other.GetComponentInParent<PlayerBump>();
+        // Seul le propriétaire du joueur applique la force
+        var player = other.GetComponentInParent<PlayerData>();
         if (player == null || !player.IsOwner) return;
-    
-        Vector3 bumpDirection = (other.ClosestPoint(transform.position) - transform.position).normalized; //TODO CHECK this allowed ?
-        player.Bump(bumpDirection,bumpVelocity);
-        /*bumpDirection = new Vector3(1, 1, 1);
-        player.GetComponentInParent<Rigidbody>().AddForce(bumpDirection*bumpVelocity);*/
+
+        if (Time.time - _lastBump < cooldown) return;
+        _lastBump = Time.time;
+
+        if (!player.TryGetComponent<Rigidbody>(out var rb)) return;
+
+        // Direction horizontale : du centre du bumper vers le joueur
+        Vector3 dir = rb.position - transform.position;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f) dir = -player.transform.forward;
+        dir.Normalize();
+
+        // On remplace la vitesse actuelle pour une poussée constante
+        rb.linearVelocity = Vector3.zero;
+        rb.AddForce(dir * bumpForce + Vector3.up * upwardBoost, ForceMode.VelocityChange);
+
         PlayAnimRpc();
     }
 
@@ -41,23 +60,25 @@ public class Bumper : NetworkBehaviour
 
     private IEnumerator StretchAndReturn()
     {
-        float bot = target.localScale.z;
-        float top = _baseScale.z * stretchMultiplier; //FIXME
+        Vector3 from = target.localScale;
+        Vector3 peak = new Vector3(
+            _baseScale.x * stretchMultiplier,
+            _baseScale.y * stretchMultiplier,
+            _baseScale.z);
+        float half = stretchDuration / 2f;
 
-        for (float t = 0f; t < 1f; t += Time.deltaTime / stretchDuration / 2)
+        for (float t = 0f; t < 1f; t += Time.deltaTime / half)
         {
-            SetScaleZ(Mathf.Lerp(bot, top, t));
+            target.localScale = Vector3.Lerp(from, peak, t);
             yield return null;
         }
-        SetScaleZ(top);
-
-        for (float t = 0f; t < 1f; t += Time.deltaTime / stretchDuration / 2)
+        for (float t = 0f; t < 1f; t += Time.deltaTime / half)
         {
-            SetScaleZ(Mathf.Lerp(top, _baseScale.z, t));
+            target.localScale = Vector3.Lerp(peak, _baseScale, t);
             yield return null;
         }
-        SetScaleZ(_baseScale.z);
 
+        target.localScale = _baseScale;
         _anim = null;
     }
 
