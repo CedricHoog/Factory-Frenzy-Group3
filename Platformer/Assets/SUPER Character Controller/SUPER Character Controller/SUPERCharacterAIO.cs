@@ -106,9 +106,9 @@ public class SUPERCharacterAIO : MonoBehaviour{
     [Range(1.0f,650.0f)]public float walkingSpeed = 140, sprintingSpeed = 260, crouchingSpeed = 45;
     [Range(1.0f,400.0f)] public float decelerationSpeed=240;
     #if ENABLE_INPUT_SYSTEM
-    public Key sprintKey = Key.LeftShift, crouchKey = Key.LeftCtrl, slideKey = Key.V;
+    public Key sprintKey = Key.LeftShift, crouchKey = Key.LeftCtrl;
     #else
-    public KeyCode sprintKey_L = KeyCode.LeftShift, crouchKey_L = KeyCode.LeftControl, slideKey_L = KeyCode.V;
+    public KeyCode sprintKey_L = KeyCode.LeftShift, crouchKey_L = KeyCode.LeftControl;
     #endif
     public bool canSprint=true, isSprinting, toggleSprint, sprintOverride, canCrouch=true, isCrouching, toggleCrouch, crouchOverride, isIdle;
     public Stances currentStance = Stances.Standing;
@@ -130,10 +130,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
     [Range(0.0f,1.0f)] public float airControlFactor = 1;
     public float decentMultiplier = 2.5f, tapJumpMultiplier = 2.1f;
     float jumpBlankingPeriod;
-
-    //Sliding
-    public bool isSliding, canSlide = true;
-    public float slidingDeceleration = 150.0f, slidingTransitionSpeed=4, maxFlatSlideDistance =10;
     
 
     //
@@ -153,7 +149,7 @@ public class SUPERCharacterAIO : MonoBehaviour{
     PhysicsMaterial _ZeroFriction, _MaxFriction;
     CapsuleCollider capsule;
     Rigidbody p_Rigidbody;
-    bool crouchInput_Momentary, crouchInput_FrameOf, sprintInput_FrameOf,sprintInput_Momentary, slideInput_FrameOf, slideInput_Momentary;
+        bool crouchInput_Momentary, crouchInput_FrameOf, sprintInput_FrameOf, sprintInput_Momentary;
     bool changingStances = false; 
 
     //Slope Affectors
@@ -161,8 +157,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
     //Jumping
     bool jumpInput_Momentary, jumpInput_FrameOf;
 
-    //Sliding
-    Vector3 cachedDirPreSlide, cachedPosPreSlide;
 
 
 
@@ -442,10 +436,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
                 sprintInput_Momentary = Keyboard.current[sprintKey].isPressed;
                 sprintInput_FrameOf = Keyboard.current[sprintKey].wasPressedThisFrame;
              }
-             if(slideKey != Key.None){
-                slideInput_Momentary = Keyboard.current[slideKey].isPressed;
-                slideInput_FrameOf = Keyboard.current[slideKey].wasPressedThisFrame;
-             }
             #if SAIO_ENABLE_PARKOUR
             vaultInput = Keyboard.current[VaultKey].isPressed;
             #endif
@@ -587,7 +577,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
                 GetGroundInfo();
                 MovePlayer(InputDir,currentGroundSpeed);
 
-                if(isSliding){Slide();}
             }
             #endregion
 
@@ -781,7 +770,7 @@ public class SUPERCharacterAIO : MonoBehaviour{
     }
     void HeadbobCycleCalculator(){
         if(enableHeadbob){
-            if(!isIdle && currentGroundInfo.isGettingGroundInfo && !isSliding){
+            if(!isIdle && currentGroundInfo.isGettingGroundInfo){
                 headbobWarmUp = Mathf.MoveTowards(headbobWarmUp, 1,Time.deltaTime*5);
                 headbobCyclePosition += (_2DVelocity.magnitude)*(Time.deltaTime * (headbobSpeed/10));
 
@@ -820,11 +809,9 @@ public class SUPERCharacterAIO : MonoBehaviour{
 
     void UpdateBodyRotation_3rdPerson(){
          //if is moving, rotate capsule to match camera forward   //change button down to bool of isFiring or isTargeting
-        if(!isIdle && !isSliding && currentGroundInfo.isGettingGroundInfo){
+        if(!isIdle && currentGroundInfo.isGettingGroundInfo){
             transform.rotation = (Quaternion.Euler(0,Mathf.MoveTowardsAngle(p_Rigidbody.rotation.eulerAngles.y,(Mathf.Atan2(InputDir.x,InputDir.z)*Mathf.Rad2Deg),10), 0));
             //transform.rotation = Quaternion.Euler(0,Mathf.MoveTowardsAngle(transform.eulerAngles.y,(Mathf.Atan2(InputDir.x,InputDir.z)*Mathf.Rad2Deg),2.5f), 0);
-        }else if(isSliding){
-            transform.localRotation = (Quaternion.Euler(Vector3.up*Mathf.MoveTowardsAngle(p_Rigidbody.rotation.eulerAngles.y,(Mathf.Atan2(p_Rigidbody.linearVelocity.x,p_Rigidbody.linearVelocity.z)*Mathf.Rad2Deg),10)));
         }else if(!currentGroundInfo.isGettingGroundInfo && rotateCharacterToCameraForward){
             transform.localRotation = (Quaternion.Euler(Vector3.up*Mathf.MoveTowardsAngle(p_Rigidbody.rotation.eulerAngles.y, headRot.y,10)));
         }
@@ -841,7 +828,7 @@ public class SUPERCharacterAIO : MonoBehaviour{
     
 
         //Movement
-        if((currentGroundInfo.isGettingGroundInfo) && !Jumped && !isSliding && !doingPosInterp)
+        if((currentGroundInfo.isGettingGroundInfo) && !Jumped && !doingPosInterp)
         {
             //Deceleration
             if(Direction.magnitude==0&& p_Rigidbody.linearVelocity.normalized.magnitude>0.1f){
@@ -852,10 +839,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
                 p_Rigidbody.linearVelocity = (Vector3.MoveTowards(p_Rigidbody.linearVelocity,Vector3.ClampMagnitude(((Direction)*((Speed)*Time.fixedDeltaTime))+(Vector3.down),Speed/50),1));
             }
             capsule.sharedMaterial = InputDir.magnitude>0 ? _ZeroFriction : _MaxFriction;
-        }
-        //Sliding
-        else if(isSliding){
-            p_Rigidbody.AddForce(-(p_Rigidbody.linearVelocity-Physics.gravity)*(slidingDeceleration*Time.fixedDeltaTime),ForceMode.Force);
         }
         
         //Air Control
@@ -904,53 +887,7 @@ public class SUPERCharacterAIO : MonoBehaviour{
                 jumpBlankingPeriod = Time.time;
         }
     }
-    void Slide(){
-        if(!isSliding){
-            if(currentGroundInfo.isInContactWithGround){
-                //do debug print
-                if(enableMovementDebugging) {print("Starting Slide.");}
-                p_Rigidbody.AddForce((transform.forward*((sprintingSpeed))+(Vector3.up*currentGroundInfo.groundInfluenceDirection.y)),ForceMode.Force);
-                cachedDirPreSlide = transform.forward;
-                cachedPosPreSlide = transform.position;
-                capsule.sharedMaterial = _ZeroFriction;
-                StartCoroutine(ApplyStance(slidingTransitionSpeed,Stances.Crouching));
-                isSliding = true;
-            }
-        }else if(slideInput_Momentary){
-            if(enableMovementDebugging) {print("Continuing Slide.");}
-            if(Vector3.Distance(transform.position, cachedPosPreSlide)<maxFlatSlideDistance){p_Rigidbody.AddForce(cachedDirPreSlide*(sprintingSpeed/50),ForceMode.Force);}
-            if(p_Rigidbody.linearVelocity.magnitude>sprintingSpeed/50){p_Rigidbody.linearVelocity= p_Rigidbody.linearVelocity.normalized*(sprintingSpeed/50);}
-            else if(p_Rigidbody.linearVelocity.magnitude<(crouchingSpeed/25)){
-                if(enableMovementDebugging) {print("Slide too slow, ending slide into crouch.");}
-                //capsule.sharedMaterial = _MaxFrix;
-                isSliding = false;
-                isSprinting = false;
-                StartCoroutine(ApplyStance(stanceTransitionSpeed,Stances.Crouching));
-                currentGroundMovementSpeed = GroundSpeedProfiles.Crouching;
-            }
-        }else{
-            if(OverheadCheck()){
-                if(p_Rigidbody.linearVelocity.magnitude>(walkingSpeed/50)){
-                    if(enableMovementDebugging) {print("Key realeased, ending slide into a sprint.");}
-                    isSliding = false;
-                    StartCoroutine(ApplyStance(stanceTransitionSpeed,Stances.Standing));
-                    currentGroundMovementSpeed = GroundSpeedProfiles.Sprinting;
-                }else{
-                     if(enableMovementDebugging) {print("Key realeased, ending slide into a walk.");}
-                    isSliding = false;
-                    StartCoroutine(ApplyStance(stanceTransitionSpeed,Stances.Standing));
-                    currentGroundMovementSpeed = GroundSpeedProfiles.Walking;
-                }
-            }else{
-                if(enableMovementDebugging) {print("Key realeased but there is an obstruction. Ending slide into crouch.");}
-                isSliding = false;
-                isSprinting = false;
-                StartCoroutine(ApplyStance(stanceTransitionSpeed,Stances.Crouching));
-                currentGroundMovementSpeed = GroundSpeedProfiles.Crouching;
-            }
-
-        }
-    }
+    
     void GetGroundInfo(){
         //to Get if we're actually touching ground.
         //to act as a normal and point buffer.
@@ -1137,12 +1074,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
                         if((vaultInput || autoVaultWhenSpringing) && canVault){VaultCheck();}
                         #endif
                         //check for state change call
-                        if(canSlide && !isIdle && slideInput_FrameOf && currentGroundInfo.isInContactWithGround){
-                            Slide();
-                            currentGroundMovementSpeed = GroundSpeedProfiles.Sliding;
-                            break;
-                        }
-
 
                         else if((canCrouch&& crouchInput_FrameOf)||crouchOverride){
                             isCrouching = true;
@@ -1206,8 +1137,7 @@ public class SUPERCharacterAIO : MonoBehaviour{
         if(isSprinting && !ignoreStamina && !isIdle){
             if(currentStaminaLevel!=0){
                 currentStaminaLevel = Mathf.MoveTowards(currentStaminaLevel, 0, s_depletionSpeed*Time.deltaTime);
-            }else if(!isSliding){ currentGroundMovementSpeed = GroundSpeedProfiles.Walking;}
-            staminaIsChanging = true;
+            }
         }
         else if(currentStaminaLevel != Stamina && !ignoreStamina && (enableSurvivalStats ? (!currentSurvivalStats.isDehydrated && !currentSurvivalStats.isStarving) : true)){
             currentStaminaLevel = Mathf.MoveTowards(currentStaminaLevel, Stamina, s_regenerationSpeed*Time.deltaTime);
@@ -1226,13 +1156,13 @@ public class SUPERCharacterAIO : MonoBehaviour{
         if(enableFootstepSounds&& footstepTriggeringMode == FootstepTriggeringMode.calculatedTiming && shouldCalculateFootstepTriggers){
             if(_2DVelocity.magnitude>(currentGroundSpeed/100)&& !isIdle){
                 if(cameraPerspective == PerspectiveModes._1stPerson){
-                    if((enableHeadbob ? headbobCyclePosition : Time.time) > StepCycle && currentGroundInfo.isGettingGroundInfo && !isSliding){
+                    if((enableHeadbob ? headbobCyclePosition : Time.time) > StepCycle && currentGroundInfo.isGettingGroundInfo){
                         //print("Steped");
                         CallFootstepClip();
                         StepCycle = enableHeadbob ? (headbobCyclePosition+0.5f) : (Time.time+((stepTiming*_2DVelocityMag)*2));
                     }
                 }else{
-                    if(Time.time > StepCycle && currentGroundInfo.isGettingGroundInfo && !isSliding){
+                    if(Time.time > StepCycle && currentGroundInfo.isGettingGroundInfo){
                         //print("Steped");
                         CallFootstepClip();
                         StepCycle = (Time.time+((stepTiming*_2DVelocityMag)*2));
@@ -1426,9 +1356,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
                         }
                         if(a_Crouching != ""){
                             _3rdPersonCharacterAnimator.SetBool(a_Crouching,isCrouching);   
-                        }
-                        if(a_Sliding != ""){
-                            _3rdPersonCharacterAnimator.SetBool(a_Sliding,isSliding);   
                         }
                         if(a_Jumped != ""){
                             _3rdPersonCharacterAnimator.SetBool(a_Jumped,Jumped);   
@@ -1851,26 +1778,6 @@ public class SuperFPEditor : Editor{
                 t.tapJumpMultiplier = EditorGUILayout.Slider(new GUIContent("Tap Jump Multiplier","When the player lets go of space prematurely during a jump, what should gravity be multiplied by?"),t.tapJumpMultiplier, 0.1f,5);
             }
 
-            EditorGUILayout.EndVertical();
-            #endregion
-
-            #region Sliding
-            EditorGUILayout.Space();
-            GUILayout.Label("<color=grey>Sliding Settings</color>",labelSubHeaderStyle,GUILayout.ExpandWidth(true));
-            EditorGUILayout.BeginVertical(BoxPanel);
-            //EditorGUILayout.Space(15);
-
-            t.canSlide = EditorGUILayout.ToggleLeft(new GUIContent("Can Slide", "Is the player allowed to slide? Use the crouch key to initiate a slide!"),t.canSlide);
-            GUI.enabled = t.canSlide;
-            #if ENABLE_INPUT_SYSTEM
-            t.slideKey = (Key)EditorGUILayout.EnumPopup(new GUIContent("Slide Key", "The Key used to Slide while the character is sprinting."),t.slideKey);
-            #else
-            t.slideKey_L = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Slide Key", "The Key used to Slide wile the character is sprinting."),t.slideKey_L);
-            #endif
-            t.slidingDeceleration = EditorGUILayout.Slider(new GUIContent("Sliding Deceleration", "How much deceleration should be applied while sliding?"),t.slidingDeceleration, 50,300);
-            t.slidingTransitionSpeed = EditorGUILayout.Slider(new GUIContent("Sliding Transition Speed", "How quickly should the character transition from the current stance to sliding?"),t.slidingTransitionSpeed,0.01f,10);
-            t.maxFlatSlideDistance = EditorGUILayout.Slider(new GUIContent("Flat Slide Distance", "If the player starts sliding on a flat surface with no ground angle influence, How many units should the player slide forward?"),t.maxFlatSlideDistance, 0.5f,15);
-            GUI.enabled = true;
             EditorGUILayout.EndVertical();
             #endregion
             
