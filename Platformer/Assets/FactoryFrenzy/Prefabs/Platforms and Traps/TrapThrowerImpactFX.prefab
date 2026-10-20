@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8899715088196048920}
   - component: {fileID: 2655966957918432491}
   m_Layer: 0
-  m_Name: ImpactFX
+  m_Name: TrapThrowerImpactFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
