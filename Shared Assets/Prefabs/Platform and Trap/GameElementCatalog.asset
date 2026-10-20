@@ -28,6 +28,6 @@ MonoBehaviour:
   - typeName: Checkpoint
     prefab: {fileID: 0}
   - typeName: PlatformStart
-    prefab: {fileID: 2053452157810321851, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
+    prefab: {fileID: 7003678413820410434, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
   - typeName: PlatformEnd
     prefab: {fileID: -5086876994326447421, guid: 6a94649e36976e340b042cadfa4b68fa, type: 3}

@@ -29,8 +29,7 @@ public class GameElementManager : MonoBehaviour
         Grabbed?.Invoke(elementId);
     }
 
-
-    // this should be the only function used in the platformer
+    
     public void SaveToJSON()
     {
         //TODO File.WriteAllText(path, JsonUtility.ToJson(level, true));
@@ -38,6 +37,7 @@ public class GameElementManager : MonoBehaviour
 
     public void LoadFromJSON()
     {
+        //THIS FUNCTION SHOULD BE CALLED FROM A FILE IN SHARED ASSETS
         //TODO level = JsonUtility.FromJson<LevelData>(File.ReadAllText(path));
         //TODO then destroy existing views, instantiate one view per element under levelRoot, Bind + Apply.
         //TODO check for valid elements.
