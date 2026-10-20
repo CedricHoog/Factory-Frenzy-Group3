@@ -54,8 +54,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.1, y: 0.7, z: 1.1}
-  m_Center: {x: 0.01, y: 1, z: 0}
+  m_Size: {x: 1.1, y: 1.4, z: 1.1}
+  m_Center: {x: 0.01, y: 0.7, z: 0}
 --- !u!114 &6651289367937489833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,7 +72,7 @@ MonoBehaviour:
   target: {fileID: 6182661149257383922}
   stretchMultiplier: 2
   stretchDuration: 0.2
-  bounceVelocity: 15
+  bounceVelocity: 20
 --- !u!33 &1126820955352933873
 MeshFilter:
   m_ObjectHideFlags: 0
