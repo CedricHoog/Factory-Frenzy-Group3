@@ -1,4 +1,5 @@
 ﻿{
   "name": "FactoryFrenzy.Shared",
+  "references": [ "Unity.InputSystem" ],
   "autoReferenced": true
 }

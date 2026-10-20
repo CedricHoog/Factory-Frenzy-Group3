@@ -1,62 +1,65 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
-/* TODO
-[Serializable]
-public class LevelData
-{
-    public int version = 1;
-    public int nextId = 1;
-    [SerializeReference] public List<GameElement> elements = new();
-}
-
-// save
-File.WriteAllText(path, JsonUtility.ToJson(level, true));
-// load
-level = JsonUtility.FromJson<LevelData>(File.ReadAllText(path));
-*/
-
-
-
+// Editor project. Owns the level data and the scene objects that represent it.
 public class GameElementManager : MonoBehaviour
 {
-    public List<GameElement> gameElementList = new List<GameElement>();
-    public int selectedGameElementId;
+    [Header("Scene references")]
+    [SerializeField] private ElementPrefabCatalog catalog;   // type name -> prefab
+    [SerializeField] private Transform levelRoot;            // parent of placed elements (keep at origin, scale 1)
+    [SerializeField] private Transform spawnAnchor;          // child of the VR controller, in front of the hand
     
-    /*
-    In Unity, as an Inspector field:
+    [Header("Input")]
+    [SerializeField] private InputActionProperty placeAction;
 
-    If the subclasses are MonoBehaviours, use [SerializeField] private List<GameElements> items; and drag objects in.
-    If they’re plain C# classes, add [SerializeReference] instead of [SerializeField], and note that the default Inspector can’t pick the subclass type.
-    */
+    public int selectedGameElementId;
 
-    //this should be the only function used in the platformer
+    // ---------- Events ----------
+    public event Action<GameElement> OnSelectionChanged;     // null when nothing is selected
+    public event Action<GameElement> OnElementChanged;       // size / rotation / position was modified
+
+    // ---------- State ----------
+    private LevelData level = new LevelData();
+    private readonly Dictionary<int, ElementView> views = new Dictionary<int, ElementView>();
+    private ElementView held;                                // created but not placed yet
+
+    public GameElement SelectedElement { get; private set; }
+    public List<GameElement> gameElementList => level.elements;   // kept for existing scripts
+    public bool HasHeldElement => held != null;
+    
+    private void OnEnable()
+    {
+        placeAction.action.Enable();
+        placeAction.action.performed += OnPlacePressed;
+    }
+
+    private void OnDisable()
+    {
+        placeAction.action.performed -= OnPlacePressed;
+    }
+
+    private void OnPlacePressed(InputAction.CallbackContext ctx) => PlaceHeldElement();
+
+    // ---------- Save / Load ----------
+    // this should be the only function used in the platformer
     public void SaveToJSON()
     {
-        //TODO create a json file based on gameElementList
+        //TODO File.WriteAllText(path, JsonUtility.ToJson(level, true));
     }
 
     public void LoadFromJSON()
     {
-        //TODO fill gameElementList with the json file. Might need to add check for valid elements.
+        //TODO level = JsonUtility.FromJson<LevelData>(File.ReadAllText(path));
+        //TODO then destroy existing views, instantiate one view per element under levelRoot, Bind + Apply.
+        //TODO check for valid elements.
     }
 
-    /*
-    public void SelectGameElement()
-    {
-    //TODO : need a function made to get an gameElement an put it in selectedGameElementId.
-    //(also set selectedGameElementName & selectedGameElementDescription for the tooltip)
-    //When an item is selected, witch the UI from add element mode to modify element mode.
-    //Some sections could be added/remove based on the name of the game element
-    }*/
-    
-    public event Action<GameElement> OnSelectionChanged;
-    public GameElement SelectedElement { get; private set; }
-
+    // ---------- Selection ----------
     public void SelectGameElement(int id)
     {
-        SelectedElement = gameElementList.Find(e => e.id == id);
+        SelectedElement = level.elements.Find(e => e.id == id);
         selectedGameElementId = id;
         OnSelectionChanged?.Invoke(SelectedElement);   // null if the id wasn't found
     }
@@ -67,21 +70,89 @@ public class GameElementManager : MonoBehaviour
         OnSelectionChanged?.Invoke(null);
     }
 
-    public void ToggleUIMode()
+    // ---------- Creation ----------
+    // Called by the 9 buttons with the class name, e.g. "PlatformMoving"
+    public GameElement CreateGameElement(string typeName)
     {
-    //might need to be in a different file ? idk
-    //TODO : toggle add mode / modify mode
-    //also check selectedGameElementId for some values
+        if (catalog == null || spawnAnchor == null || levelRoot == null)
+        {
+            Debug.LogError("GameElementManager: catalog, levelRoot or spawnAnchor is not assigned.", this);
+            return null;
+        }
+
+        // The classes live in the shared assembly, so look the type up there
+        Type type = typeof(GameElement).Assembly.GetType(typeName);
+        if (type == null || type.IsAbstract || !typeof(GameElement).IsAssignableFrom(type))
+        {
+            Debug.LogError($"Unknown element type '{typeName}'.", this);
+            return null;
+        }
+
+        ElementView prefab = catalog.Get(typeName);
+        if (prefab == null)
+        {
+            Debug.Log($"No prefab in the catalog for '{typeName}'.", this);
+            return null;
+        }
+
+        // Policy: an element that was never placed is replaced by the new one
+        if (held != null) DeleteGameElement(held.Element.id);
+
+        // 1. data
+        var element = (GameElement)Activator.CreateInstance(type);
+        element.id = level.nextId++;
+        level.elements.Add(element);
+
+        // 2. scene object, child of the controller anchor
+        ElementView view = Instantiate(prefab, spawnAnchor);
+        view.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+        view.Bind(element);
+
+        // 3. bookkeeping
+        views[element.id] = view;
+        held = view;
+        SelectGameElement(element.id);
+
+        return element;
     }
 
-    public void CreateGameElement(string elementName)
+    // Called by the "place" input action (trigger / grip)
+    public void PlaceHeldElement()
     {
-        //TODO create a game element based on what is clicked in the UI. also think about where to position it. Probably not 0,0,0.
-        //id needs to be unique
+        if (held == null) return;
+
+        held.transform.SetParent(levelRoot, true);   // keep the world position
+        held.WriteBack();                            // transform -> element.position / rotation
+
+        GameElement placed = held.Element;
+        held = null;
+        OnElementChanged?.Invoke(placed);
     }
 
+    // ---------- Modification ----------
+    // Call after changing a value on an element (sliders...): refreshes its scene object
+    public void NotifyChanged(GameElement element)
+    {
+        if (element != null && views.TryGetValue(element.id, out var view))
+            view.Apply();
+        OnElementChanged?.Invoke(element);
+    }
+
+    // ---------- Deletion ----------
     public void DeleteGameElement(int id)
     {
-        //TODO delete a game element based on it's ID
+        if (views.TryGetValue(id, out var view))
+        {
+            if (view != null) Destroy(view.gameObject);
+            views.Remove(id);
+        }
+
+        level.elements.RemoveAll(e => e.id == id);
+
+        if (held != null && held.Element.id == id) held = null;
+        if (SelectedElement != null && SelectedElement.id == id) ClearSelection();
     }
+
+    // ---------- Lookup ----------
+    public ElementView GetView(int id) => views.TryGetValue(id, out var v) ? v : null;
 }
