@@ -46,30 +46,30 @@ public class Trampoline : NetworkBehaviour
 
     private IEnumerator StretchAndReturn()
     {
-        float bot = target.localScale.z;
-        float top = _baseScale.z * stretchMultiplier;
+        float bot = target.localScale.y;
+        float top = _baseScale.y * stretchMultiplier;
 
         for (float t = 0f; t < 1f; t += Time.deltaTime / stretchDuration / 2)
         {
-            SetScaleZ(Mathf.Lerp(bot, top, t));
+            SetScaleY(Mathf.Lerp(bot, top, t));
             yield return null;
         }
-        SetScaleZ(top);
+        SetScaleY(top);
 
         for (float t = 0f; t < 1f; t += Time.deltaTime / stretchDuration / 2)
         {
-            SetScaleZ(Mathf.Lerp(top, _baseScale.z, t));
+            SetScaleY(Mathf.Lerp(top, _baseScale.y, t));
             yield return null;
         }
-        SetScaleZ(_baseScale.z);
+        SetScaleY(_baseScale.y);
 
         _anim = null;
     }
 
-    private void SetScaleZ(float z)
+    private void SetScaleY(float y)
     {
         Vector3 s = target.localScale;
-        s.z = z;
+        s.y = y;
         target.localScale = s;
     }
 }
