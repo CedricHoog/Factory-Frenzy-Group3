@@ -4973,8 +4973,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8841389740430043283}
   - component: {fileID: 140198138490227487}
-  - component: {fileID: 4600329776424339927}
-  - component: {fileID: 5486561549734903105}
   m_Layer: 0
   m_Name: TrapThrower
   m_TagString: Untagged
@@ -5095,53 +5093,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &4600329776424339927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8525039061876082329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9642d7bdf21efb64b94f1916538c8d99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrapShooterFSM
-  currentState: 0
-  rotationPivot: {fileID: 5048447542596727871}
-  firePoint: {fileID: 7919971416225836588}
-  shotEffects: {fileID: 5486561549734903105}
-  projectilePrefab: {fileID: 2230590970671158076, guid: 331b689583dde6d4ab95b7b316b48432, type: 3}
-  spawnOffset: 0.35
-  activationDelay: 10
-  detectionRadius: 12
-  searchAngle: 70
-  searchSpeed: 50
-  orientationSpeed: 120
-  firingAngle: 30
-  shotInterval: 1.5
-  horizontalLaunch: 18
-  verticalLaunch: 9
-  shotClip: {fileID: 8300000, guid: c8e810efa36e5e64d918b5cf95fc6ebe, type: 3}
---- !u!114 &5486561549734903105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8525039061876082329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 415c7ba9032db754b826924ddacdf587, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TurretShotEffects
-  firePoint: {fileID: 7919971416225836588}
-  recoilBody: {fileID: 7000010826855385661}
-  muzzleFlash: {fileID: 7183075917506471396}
-  smokeFX: {fileID: 4970471261191491629}
-  impactPrefab: {fileID: 8899715088196048920, guid: 3762a9c54ce8bf54eba02cef7bf603f1, type: 3}
-  recoilDistance: 0.2
-  recoilBackTime: 0.06
-  recoilReturnTime: 0.18
-  impactClip: {fileID: 0}
-  impactVolume: 0.5

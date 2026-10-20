@@ -1,681 +1,249 @@
-
 using System.Collections.Generic;
+using FactoryFrenzy.Gameplay;
+using Unity.Netcode;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class TrapShooterFSM : MonoBehaviour
+public class TrapShooter : NetworkBehaviour
 {
-    // ==========================================
-    // FINITE STATE MACHINE
-    // ==========================================
-
-    public enum TurretState
-    {
-        Search,
-        Orientation,
-        Fire
-    }
+    public enum TurretState { Search, Orientation, Fire }
 
     [Header("Current State")]
-    [SerializeField]
-    private TurretState currentState = TurretState.Search;
-
-
-    // ==========================================
-    // REFERENCES
-    // ==========================================
+    [SerializeField] private TurretState currentState = TurretState.Search;
 
     [Header("Turret References")]
-
-    [SerializeField]
-    private Transform rotationPivot;
-
-    [SerializeField]
-    private Transform firePoint;
+    [SerializeField] private Transform rotationPivot;
+    [SerializeField] private Transform firePoint;
 
     [Header("Visual Effects")]
-
-    [SerializeField]
-    private TurretShotEffects shotEffects;
-
-
-    // ==========================================
-    // PROJECTILE
-    // ==========================================
+    [SerializeField] private TurretShotEffects shotEffects;
 
     [Header("Projectile Settings")]
-
-    [SerializeField]
-    private TurretProjectile projectilePrefab;
-
-    [SerializeField, Min(0f)]
-    private float spawnOffset = 0.35f;
-
-
-    // ==========================================
-    // ACTIVATION TIMER - NEW
-    // ==========================================
+    [SerializeField] private TurretProjectile projectilePrefab;
+    [SerializeField, Min(0f)] private float spawnOffset = 0.35f;
 
     [Header("Activation Settings")]
-
-    [Tooltip("Delay in seconds before the turret activates.")]
-    [SerializeField, Min(0f)]
-    private float activationDelay = 5f;
-
-    // Time when the turret can start working.
-    private float activationTime;
-
-
-    // ==========================================
-    // DETECTION
-    // ==========================================
+    [Tooltip("Secondes après le départ de la course.")]
+    [SerializeField, Min(0f)] private float activationDelay = 5f;
 
     [Header("Detection Settings")]
-
-    [SerializeField, Min(0.1f)]
-    private float detectionRadius = 12f;
-
-
-    // ==========================================
-    // SEARCH
-    // ==========================================
+    [SerializeField, Min(0.1f)] private float detectionRadius = 12f;
 
     [Header("Search Settings")]
-
-    [SerializeField, Range(0f, 180f)]
-    private float searchAngle = 70f;
-
-    [SerializeField, Min(1f)]
-    private float searchSpeed = 50f;
-
-
-    // ==========================================
-    // ORIENTATION
-    // ==========================================
+    [SerializeField, Range(0f, 180f)] private float searchAngle = 70f;
+    [SerializeField, Min(1f)] private float searchSpeed = 50f;
 
     [Header("Orientation Settings")]
-
-    [SerializeField, Min(1f)]
-    private float orientationSpeed = 120f;
-
-    [SerializeField, Range(1f, 90f)]
-    private float firingAngle = 6f;
-
-
-    // ==========================================
-    // SHOOTING
-    // ==========================================
+    [SerializeField, Min(1f)] private float orientationSpeed = 120f;
+    [SerializeField, Range(1f, 90f)] private float firingAngle = 6f;
 
     [Header("Shooting Settings")]
-
-    [SerializeField, Min(0.1f)]
-    private float shotInterval = 1.5f;
-
-
-    // ==========================================
-    // KNOCKBACK
-    // ==========================================
+    [SerializeField, Min(0.1f)] private float shotInterval = 1.5f;
 
     [Header("Knockback Settings")]
-
-    [SerializeField]
-    private float horizontalLaunch = 18f;
-
-    [SerializeField]
-    private float verticalLaunch = 9f;
-
-
-    // ==========================================
-    // AUDIO
-    // ==========================================
+    [SerializeField] private float horizontalLaunch = 18f;
+    [SerializeField] private float verticalLaunch = 9f;
 
     [Header("Modern Pistols SFX")]
-
-    [SerializeField]
-    private AudioClip shotClip;
+    [SerializeField] private AudioClip shotClip;
 
     private AudioSource audioSource;
-
-
-    // ==========================================
-    // PRIVATE VARIABLES
-    // ==========================================
-
     private Quaternion initialRotation;
-
     private int searchDirection = 1;
-
     private float nextShotTime;
+    private PlayerData currentTarget;
 
-    private Transform currentTarget;
-
-    private readonly HashSet<Transform> playersInRange =
-        new HashSet<Transform>();
-
-    private readonly Dictionary<Transform, long> entryOrder =
-        new Dictionary<Transform, long>();
-
-    private readonly List<Transform> playersToRemove =
-        new List<Transform>();
-
+    private readonly HashSet<PlayerData> playersInRange = new();
+    private readonly Dictionary<PlayerData, long> entryOrder = new();
+    private readonly List<PlayerData> playersToRemove = new();
     private long nextEntryNumber;
-
-
-    // ==========================================
-    // INITIALIZATION
-    // ==========================================
 
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
 
-        // Automatically find visual effects.
         if (shotEffects == null)
-        {
-            shotEffects =
-                GetComponent<TurretShotEffects>();
-        }
+            shotEffects = GetComponent<TurretShotEffects>();
 
-        // Verify required references.
         if (rotationPivot == null || firePoint == null)
         {
-            Debug.LogError(
-                "TrapShooterFSM: RotationPivot or FirePoint missing!",
-                this
-            );
-
+            Debug.LogError("TrapShooter : RotationPivot ou FirePoint manquant !", this);
             enabled = false;
             return;
         }
 
         if (projectilePrefab == null)
-        {
-            Debug.LogWarning(
-                "TrapShooterFSM: Projectile Prefab not assigned!",
-                this
-            );
-        }
-
-        if (shotEffects == null)
-        {
-            Debug.LogWarning(
-                "TrapShooterFSM: TurretShotEffects missing!",
-                this
-            );
-        }
+            Debug.LogWarning("TrapShooter : Projectile Prefab non assigné !", this);
 
         initialRotation = rotationPivot.rotation;
-
-        currentState = TurretState.Search;
     }
-
-
-    // ==========================================
-    // ACTIVATION TIMER - NEW
-    // ==========================================
-
-    private void OnEnable()
-    {
-        // The turret becomes active after the delay.
-        activationTime =
-            Time.time + Mathf.Max(0f, activationDelay);
-
-        // Reset current targeting.
-        currentTarget = null;
-
-        currentState = TurretState.Search;
-
-        playersInRange.Clear();
-        entryOrder.Clear();
-        playersToRemove.Clear();
-
-        nextEntryNumber = 0;
-
-        // Reset shooting cooldown.
-        nextShotTime = activationTime;
-    }
-
-
-    // ==========================================
-    // MAIN FSM UPDATE
-    // ==========================================
 
     private void Update()
     {
-        // ======================================
-        // ACTIVATION DELAY - NEW
-        // ======================================
+        // Toute la logique tourne uniquement sur le serveur
+        if (!IsServer) return;
 
-        // While the timer is running:
-        // - No player detection
-        // - No turret rotation
-        // - No projectile firing
-        // - No shot effects
-        // - No shooting sound
-
-        if (Time.time < activationTime)
+        // Activation : activationDelay secondes après le départ de la course
+        var race = RaceTimer.Instance;
+        if (race == null || !race.IsRunning || race.Elapsed < activationDelay)
         {
             currentState = TurretState.Search;
             return;
         }
 
-
-        // ======================================
-        // NORMAL TURRET BEHAVIOUR
-        // ======================================
-
-        // Detect nearby players.
         DetectPlayers();
-
-        // Select player with highest entry priority.
         currentTarget = SelectTarget();
 
-
-        // ======================================
-        // STATE 1 : SEARCH
-        // ======================================
-
+        // --- SEARCH ---
         if (currentTarget == null)
         {
             currentState = TurretState.Search;
-
             SearchForPlayers();
-
             return;
         }
 
-
-        // ======================================
-        // CALCULATE TARGET DIRECTION
-        // ======================================
-
-        Vector3 targetPosition =
-            GetAimPoint(currentTarget);
-
-        Vector3 direction =
-            targetPosition - firePoint.position;
-
-        // Only rotate horizontally.
+        Vector3 aim = GetAimPoint(currentTarget);
+        Vector3 direction = aim - firePoint.position;
         direction.y = 0f;
 
         Vector3 forward = firePoint.forward;
         forward.y = 0f;
 
-        if (direction.sqrMagnitude < 0.001f ||
-            forward.sqrMagnitude < 0.001f)
-        {
+        if (direction.sqrMagnitude < 0.001f || forward.sqrMagnitude < 0.001f)
             return;
-        }
 
-        float signedAngle = Vector3.SignedAngle(
-            forward,
-            direction,
-            Vector3.up
-        );
+        float signedAngle = Vector3.SignedAngle(forward, direction, Vector3.up);
 
-
-        // ======================================
-        // STATE 2 : ORIENTATION
-        // ======================================
-
+        // --- ORIENTATION ---
         if (Mathf.Abs(signedAngle) > firingAngle)
         {
             currentState = TurretState.Orientation;
 
-            float rotationStep = Mathf.Clamp(
-                signedAngle,
-                -orientationSpeed * Time.deltaTime,
-                orientationSpeed * Time.deltaTime
-            );
-
-            rotationPivot.Rotate(
-                Vector3.up,
-                rotationStep,
-                Space.World
-            );
-
+            float max = orientationSpeed * Time.deltaTime;
+            rotationPivot.Rotate(Vector3.up, Mathf.Clamp(signedAngle, -max, max), Space.World);
             return;
         }
 
-
-        // ======================================
-        // STATE 3 : FIRE
-        // ======================================
-
+        // --- FIRE ---
         currentState = TurretState.Fire;
 
-        // Respect shooting cooldown.
         if (Time.time >= nextShotTime)
         {
-            FireAtPlayer(currentTarget);
+            nextShotTime = Time.time + shotInterval;
 
-            nextShotTime =
-                Time.time + shotInterval;
+            Vector3 shotDirection = (aim - firePoint.position).normalized;
+            Vector3 spawnPosition = firePoint.position + shotDirection * spawnOffset;
+
+            FireRpc(spawnPosition, shotDirection);
         }
     }
-
-
-    // ==========================================
-    // SEARCH STATE
-    // ==========================================
 
     private void SearchForPlayers()
     {
-        Quaternion searchLimit =
-            Quaternion.AngleAxis(
-                searchDirection * searchAngle,
-                Vector3.up
-            ) * initialRotation;
+        Quaternion limit = Quaternion.AngleAxis(searchDirection * searchAngle, Vector3.up) * initialRotation;
 
-        // Smooth rotation.
-        rotationPivot.rotation =
-            Quaternion.RotateTowards(
-                rotationPivot.rotation,
-                searchLimit,
-                searchSpeed * Time.deltaTime
-            );
+        rotationPivot.rotation = Quaternion.RotateTowards(
+            rotationPivot.rotation, limit, searchSpeed * Time.deltaTime);
 
-        // Reverse direction at search limit.
-        if (Quaternion.Angle(
-            rotationPivot.rotation,
-            searchLimit
-        ) < 0.5f)
-        {
+        if (Quaternion.Angle(rotationPivot.rotation, limit) < 0.5f)
             searchDirection *= -1;
-        }
     }
 
-
-    // ==========================================
-    // PLAYER DETECTION
-    // ==========================================
-
+    // Joueurs dans le rayon, avec leur ordre d'entrée (le premier entré est ciblé)
     private void DetectPlayers()
     {
         playersInRange.Clear();
 
-        Collider[] colliders = Physics.OverlapSphere(
-            rotationPivot.position,
-            detectionRadius,
-            Physics.AllLayers,
-            QueryTriggerInteraction.Collide
-        );
+        float radiusSqr = detectionRadius * detectionRadius;
 
-        foreach (Collider hit in colliders)
+        foreach (var p in PlayerData.All)
         {
-            Transform player =
-                FindPlayerRoot(hit.transform);
+            if (p == null) continue;
 
-            if (player == null)
+            if ((p.transform.position - rotationPivot.position).sqrMagnitude > radiusSqr)
                 continue;
 
-            // Register new players in entry order.
-            if (playersInRange.Add(player) &&
-                !entryOrder.ContainsKey(player))
-            {
-                entryOrder.Add(
-                    player,
-                    ++nextEntryNumber
-                );
-            }
+            if (playersInRange.Add(p) && !entryOrder.ContainsKey(p))
+                entryOrder.Add(p, ++nextEntryNumber);
         }
 
-        // Remove players that left the zone.
         playersToRemove.Clear();
-
         foreach (var entry in entryOrder)
         {
-            if (entry.Key == null ||
-                !playersInRange.Contains(entry.Key))
-            {
+            if (entry.Key == null || !playersInRange.Contains(entry.Key))
                 playersToRemove.Add(entry.Key);
-            }
         }
-
-        foreach (Transform player in playersToRemove)
-        {
-            entryOrder.Remove(player);
-        }
+        foreach (var p in playersToRemove)
+            entryOrder.Remove(p);
     }
 
-
-    // ==========================================
-    // FIND PLAYER ROOT
-    // ==========================================
-
-    private Transform FindPlayerRoot(Transform candidate)
+    private PlayerData SelectTarget()
     {
-        Transform current = candidate;
-
-        while (current != null)
-        {
-            if (current.CompareTag("Player"))
-            {
-                return current;
-            }
-
-            current = current.parent;
-        }
-
-        return null;
-    }
-
-
-    // ==========================================
-    // TARGET SELECTION
-    // ==========================================
-
-    private Transform SelectTarget()
-    {
-        Transform selected = null;
-
-        long oldestEntry = long.MaxValue;
+        PlayerData selected = null;
+        long oldest = long.MaxValue;
 
         foreach (var entry in entryOrder)
         {
-            if (entry.Key != null &&
-                entry.Value < oldestEntry)
+            if (entry.Key != null && entry.Value < oldest)
             {
                 selected = entry.Key;
-
-                oldestEntry = entry.Value;
+                oldest = entry.Value;
             }
         }
-
         return selected;
     }
 
-
-    // ==========================================
-    // AIM POINT
-    // ==========================================
-
-    private Vector3 GetAimPoint(Transform player)
+    private Vector3 GetAimPoint(PlayerData player)
     {
-        // Aim at the center of the player's collider.
-        Collider playerCollider =
-            player.GetComponent<Collider>();
-
-        if (playerCollider == null)
-        {
-            playerCollider =
-                player.GetComponentInChildren<Collider>();
-        }
-
-        if (playerCollider != null)
-        {
-            return playerCollider.bounds.center;
-        }
-
-        // Fallback when no collider is available.
-        return player.position + Vector3.up;
+        var col = player.GetComponentInChildren<Collider>();
+        return col != null ? col.bounds.center : player.transform.position + Vector3.up;
     }
 
-
-    // ==========================================
-    // FIRE PROJECTILE
-    // ==========================================
-
-    private void FireAtPlayer(Transform player)
+    // Exécuté chez tout le monde : projectile, effets et son sont locaux
+    [Rpc(SendTo.Everyone)]
+    private void FireRpc(Vector3 spawnPosition, Vector3 shotDirection)
     {
-        if (player == null || projectilePrefab == null)
+        if (projectilePrefab != null)
         {
-            return;
+            var projectile = Instantiate(
+                projectilePrefab, spawnPosition, Quaternion.LookRotation(shotDirection));
+
+            projectile.Initialize(
+                shotDirection, transform, shotEffects, horizontalLaunch, verticalLaunch);
         }
-
-
-        // ======================================
-        // 1. CALCULATE SHOT DIRECTION
-        // ======================================
-
-        Vector3 targetPosition =
-            GetAimPoint(player);
-
-        Vector3 shotDirection =
-            targetPosition - firePoint.position;
-
-        if (shotDirection.sqrMagnitude < 0.001f)
-        {
-            return;
-        }
-
-        shotDirection.Normalize();
-
-
-        // ======================================
-        // 2. CALCULATE SPAWN POSITION
-        // ======================================
-
-        Vector3 spawnPosition =
-            firePoint.position +
-            shotDirection * spawnOffset;
-
-
-        // ======================================
-        // 3. CREATE PROJECTILE
-        // ======================================
-
-        TurretProjectile projectile = Instantiate(
-            projectilePrefab,
-            spawnPosition,
-            Quaternion.LookRotation(shotDirection)
-        );
-
-
-        // ======================================
-        // 4. INITIALIZE PROJECTILE
-        // ======================================
-
-        projectile.Initialize(
-            shotDirection,
-            transform,
-            shotEffects,
-            horizontalLaunch,
-            verticalLaunch
-        );
-
-        // The projectile handles:
-        // - Movement
-        // - Collision detection
-        // - Player knockback
-        // - Impact particles
-        // - Automatic destruction
-
-
-        // ======================================
-        // 5. VISUAL SHOT EFFECTS
-        // ======================================
 
         if (shotEffects != null)
-        {
-            // Muzzle Flash
-            // Cannon Recoil
-            // Smoke
-
             shotEffects.PlayShot();
-        }
-
-
-        // ======================================
-        // 6. MODERN PISTOLS SFX
-        // ======================================
 
         if (shotClip != null && audioSource != null)
-        {
             audioSource.PlayOneShot(shotClip);
-        }
     }
-
-
-    // ==========================================
-    // DEBUG GIZMOS
-    // ==========================================
 
     private void OnDrawGizmosSelected()
     {
-        if (rotationPivot == null)
-        {
-            return;
-        }
+        if (rotationPivot == null) return;
 
-        // Detection radius.
         Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(rotationPivot.position, detectionRadius);
 
-        Gizmos.DrawWireSphere(
-            rotationPivot.position,
-            detectionRadius
-        );
+        if (firePoint == null) return;
 
-        if (firePoint == null)
-        {
-            return;
-        }
-
-        // Horizontal firing direction.
         Vector3 forward = firePoint.forward;
         forward.y = 0f;
-
-        if (forward.sqrMagnitude < 0.001f)
-        {
-            return;
-        }
-
+        if (forward.sqrMagnitude < 0.001f) return;
         forward.Normalize();
 
-        // Left firing limit.
-        Vector3 left = Quaternion.AngleAxis(
-            -firingAngle,
-            Vector3.up
-        ) * forward;
-
-        // Right firing limit.
-        Vector3 right = Quaternion.AngleAxis(
-            firingAngle,
-            Vector3.up
-        ) * forward;
+        Vector3 left = Quaternion.AngleAxis(-firingAngle, Vector3.up) * forward;
+        Vector3 right = Quaternion.AngleAxis(firingAngle, Vector3.up) * forward;
 
         Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(firePoint.position, left * detectionRadius);
+        Gizmos.DrawRay(firePoint.position, right * detectionRadius);
 
-        Gizmos.DrawRay(
-            firePoint.position,
-            left * detectionRadius
-        );
-
-        Gizmos.DrawRay(
-            firePoint.position,
-            right * detectionRadius
-        );
-
-        // Current target direction.
-        if (Application.isPlaying &&
-            currentTarget != null)
+        if (Application.isPlaying && currentTarget != null)
         {
             Gizmos.color = Color.red;
-
-            Gizmos.DrawLine(
-                firePoint.position,
-                GetAimPoint(currentTarget)
-            );
+            Gizmos.DrawLine(firePoint.position, GetAimPoint(currentTarget));
         }
     }
 }
