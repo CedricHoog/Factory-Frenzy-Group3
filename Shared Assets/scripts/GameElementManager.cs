@@ -21,6 +21,14 @@ public class GameElementManager : MonoBehaviour
 
     public GameElement SelectedElement { get; private set; }
     public List<GameElement> gameElementList => level.elements;
+    
+    public event Action<int> Grabbed;
+
+    public void NotifyGrabbed(int elementId)
+    {
+        Grabbed?.Invoke(elementId);
+    }
+
 
     // this should be the only function used in the platformer
     public void SaveToJSON()
@@ -81,7 +89,10 @@ public class GameElementManager : MonoBehaviour
 
         views[element.id] = view;
         SelectGameElement(element.id);
-
+        
+        view.Grabbed += SelectGameElement;
+        view.Grabbed += NotifyGrabbed //for the menu manager
+            ;
         return element;
     }
     // Call after changing a value on an element (on the sliders...), refreshes its scene object
@@ -105,6 +116,8 @@ public class GameElementManager : MonoBehaviour
 
         if (SelectedElement != null && SelectedElement.id == id)
             ClearSelection();
+        
+        view.Grabbed -= SelectGameElement;
     }
 
     /*

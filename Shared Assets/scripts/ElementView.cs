@@ -1,10 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class ElementView : MonoBehaviour
 {
     public GameElement Element { get; private set; }
     public int ElementId;
     public bool IsLocked = false;
+    
+    public event Action<int> Grabbed; 
+    public void NotifyGrabbed() => Grabbed?.Invoke(Element.id);
+    
 
     public void Bind(GameElement e)
     {
