@@ -34,11 +34,10 @@ public class SUPERCharacterAIO : MonoBehaviour{
     public Camera playerCamera;
     public bool  enableCameraControl = true, lockAndHideMouse = true, autoGenerateCrosshair = true, showCrosshairIn3rdPerson = false, drawPrimitiveUI = false;
     public Sprite crosshairSprite;
-    public PerspectiveModes cameraPerspective = PerspectiveModes._1stPerson;
+    public PerspectiveModes cameraPerspective = PerspectiveModes._3rdPerson;
     //use mouse wheel to switch modes. (too close will set it to fps mode and attempting to zoom out from fps will switch to tps mode)
-    public bool automaticallySwitchPerspective = true;
+    public bool automaticallySwitchPerspective = false;
     #if ENABLE_INPUT_SYSTEM
-    public Key perspectiveSwitchingKey = Key.Q;
     #else
     public KeyCode perspectiveSwitchingKey_L = KeyCode.None;
     #endif
@@ -421,7 +420,6 @@ public class SUPERCharacterAIO : MonoBehaviour{
             MouseXY.y = Mouse.current.delta.x.ReadValue()/50;
             
             mouseScrollWheel = Mouse.current.scroll.y.ReadValue()/1000;
-            if(perspectiveSwitchingKey!=Key.None)perspecTog = Keyboard.current[perspectiveSwitchingKey].wasPressedThisFrame;
             if(interactKey!=Key.None)interactInput = Keyboard.current[interactKey].wasPressedThisFrame;
             //movement
 
@@ -1638,7 +1636,6 @@ public class SuperFPEditor : Editor{
         if(cameraSettingsFoldout){
             t.automaticallySwitchPerspective = EditorGUILayout.ToggleLeft(new GUIContent("Automatically Switch Perspective", "Should the Camera perspective mode automatically change based on the distance between the camera and the character's head?"),t.automaticallySwitchPerspective);
             #if ENABLE_INPUT_SYSTEM
-            t.perspectiveSwitchingKey = (Key)EditorGUILayout.EnumPopup(new GUIContent("Perspective Switch Key", "The keyboard key used to switch perspective modes. Set to none if you do not wish to allow perspective switching"),t.perspectiveSwitchingKey);
             #else
             if(!t.automaticallySwitchPerspective){t.perspectiveSwitchingKey_L = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Perspective Switch Key", "The keyboard key used to switch perspective modes. Set to none if you do not wish to allow perspective switching"),t.perspectiveSwitchingKey_L);}
             #endif

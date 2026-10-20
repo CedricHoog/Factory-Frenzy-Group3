@@ -1570,10 +1570,10 @@ PrefabInstance:
       addedObject: {fileID: 7974584570281540982}
     - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2448745917702598885}
+      addedObject: {fileID: 9159102938839796127}
     - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 9159102938839796127}
+      addedObject: {fileID: 2023790671400551606}
     - targetCorrespondingSourceObject: {fileID: 6817638360860843948, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8733747426371152433}
@@ -1858,21 +1858,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FactoryFrenzy.Gameplay.PlayerReadyInput
   playerData: {fileID: 8474263652943471578}
---- !u!114 &2448745917702598885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3716647013259988195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9a035f0e76b8044a8c41e347d38a708, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FactoryFrenzy.Gameplay.PlayerMovementLock
-  ShowTopMostFoldoutHeaderGroup: 1
-  controller: {fileID: 3716647013259988193}
-  body: {fileID: 3716647013259988207}
 --- !u!114 &9159102938839796127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1888,8 +1873,23 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerData: {fileID: 8474263652943471578}
   readyInput: {fileID: 7974584570281540982}
-  movementLock: {fileID: 2448745917702598885}
+  movementLock: {fileID: 2023790671400551606}
   cameraObject: {fileID: 3716647013066333476}
+--- !u!114 &2023790671400551606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3716647013259988195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9a035f0e76b8044a8c41e347d38a708, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FactoryFrenzy.Gameplay.PlayerMovementLock
+  ShowTopMostFoldoutHeaderGroup: 1
+  character: {fileID: 3716647013259988193}
+  body: {fileID: 3716647013259988207}
 --- !u!54 &3716647013259988207 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6817638361354391143, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
