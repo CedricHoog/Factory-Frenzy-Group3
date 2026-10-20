@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
 
+
 public class GameElementManager : MonoBehaviour
 {
     [Header("Scene references")]
@@ -116,10 +117,17 @@ public class GameElementManager : MonoBehaviour
     
     public void ToggleLockGameElement()
     {
-        //TODO for FP2-2, could be in another file
-        /*GetComponent<XRGrabInteractable>().trackPosition = mode;
-        GetComponent<XRGrabInteractable>().trackRotation = mode;
-        GetComponent<XRGrabInteractable>().trackScale = mode;*/
+        if (!views.TryGetValue(selectedGameElementId, out var view) || view == null)
+            return;
+
+        view.IsLocked = !view.IsLocked;
+
+        if (view.TryGetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>(out var grab))
+        {
+            grab.trackPosition = view.IsLocked;
+            grab.trackRotation = view.IsLocked;
+            grab.trackScale = view.IsLocked;
+        }
     }
     
     public void SwapMovingPlatform()

@@ -4,7 +4,7 @@ public class ElementView : MonoBehaviour
 {
     public GameElement Element { get; private set; }
     public int ElementId;
-    public bool IsLocked = true;
+    public bool IsLocked = false;
 
     public void Bind(GameElement e)
     {
