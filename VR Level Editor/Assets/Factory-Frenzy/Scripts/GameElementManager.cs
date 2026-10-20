@@ -130,16 +130,21 @@ public class GameElementManager : MonoBehaviour
     
     public void ToggleLockGameElement()
     {
+        Debug.Log("test1");
         if (!views.TryGetValue(selectedGameElementId, out var view) || view == null)
             return;
-
-        view.IsLocked = !view.IsLocked;
+        Debug.Log("test2");
+        Debug.Log(view.IsUnlocked);
+        view.IsUnlocked = !view.IsUnlocked;
 
         if (view.TryGetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>(out var grab))
         {
-            grab.trackPosition = view.IsLocked;
-            grab.trackRotation = view.IsLocked;
-            grab.trackScale = view.IsLocked;
+            Debug.Log($"test3 {view.IsUnlocked}");
+            grab.trackPosition = view.IsUnlocked;
+            grab.trackRotation = view.IsUnlocked;
+            grab.trackScale = view.IsUnlocked;
+            
+            Debug.Log($"test4 {grab.trackPosition}");
         }
     }
     
