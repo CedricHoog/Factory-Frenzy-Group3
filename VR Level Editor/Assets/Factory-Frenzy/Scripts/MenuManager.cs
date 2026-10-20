@@ -15,7 +15,12 @@ public class MenuManager : MonoBehaviour
     
     [SerializeField] private Button swapButton;
 
-    void Start() => ShowElementMenu();
+    void Start()
+    {
+        ShowElementMenu();
+        ShowAddElementPanel();
+        DeactivateSwapButton();
+    }
 
     public void ShowElementMenu() => ShowCanvas(elementMenuCanvas);
     public void ShowSaveMenu() => ShowCanvas(saveMenuCanvas);

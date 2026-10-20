@@ -9,11 +9,12 @@ public class ElementButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 {
     [SerializeField] private string elementName;
     [SerializeField] private TooltipPanel panel;
-    [SerializeField] private GameElementManager manager;
+    private GameElementManager manager;
 
     void Start()
     {
         GetComponent<Button>().onClick.AddListener(() => manager.CreateGameElement(elementName));
+        manager = FindFirstObjectByType<GameElementManager>();
     }
 
     public void OnPointerEnter(PointerEventData eventData) => panel.ShowHover(elementName);
