@@ -4973,7 +4973,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8841389740430043283}
   - component: {fileID: 140198138490227487}
-  - component: {fileID: 8831376030572582279}
   m_Layer: 0
   m_Name: TrapThrower
   m_TagString: Untagged
@@ -5094,15 +5093,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &8831376030572582279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8525039061876082329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9696e665e30be64fb29c57075225600, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: FactoryFrenzy.Shared::ElementView
