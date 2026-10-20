@@ -18,16 +18,16 @@ MonoBehaviour:
   - typeName: PlatformMoving
     prefab: {fileID: 0}
   - typeName: PlatformTrampoline
-    prefab: {fileID: 0}
+    prefab: {fileID: 8583490829032267101, guid: 9d8af48ae094ce043ad3bbd8b79ce0d6, type: 3}
   - typeName: TrapBumper
-    prefab: {fileID: 0}
+    prefab: {fileID: -81642853319638416, guid: 9b3cde31baf3f054b8131f9234f21a45, type: 3}
   - typeName: TrapFan
     prefab: {fileID: 0}
   - typeName: TrapThrower
-    prefab: {fileID: 0}
+    prefab: {fileID: 8831376030572582279, guid: 9b6ba4c1966ed8c4ea097b29a4700722, type: 3}
   - typeName: Checkpoint
     prefab: {fileID: 0}
   - typeName: PlatformStart
     prefab: {fileID: 2053452157810321851, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
   - typeName: PlatformEnd
-    prefab: {fileID: 0}
+    prefab: {fileID: -5086876994326447421, guid: 6a94649e36976e340b042cadfa4b68fa, type: 3}
