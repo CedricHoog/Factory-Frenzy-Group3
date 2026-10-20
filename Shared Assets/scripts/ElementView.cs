@@ -3,10 +3,13 @@
 public class ElementView : MonoBehaviour
 {
     public GameElement Element { get; private set; }
+    public int ElementId;
+    public bool IsLocked = true;
 
     public void Bind(GameElement e)
     {
         Element = e;
+        ElementId = e.id;
         transform.localScale = e.size;
     }
 
