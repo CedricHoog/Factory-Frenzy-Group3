@@ -124,8 +124,6 @@ GameObject:
   - component: {fileID: 3989361327088586189}
   - component: {fileID: 6929482104532143078}
   - component: {fileID: 5288727066925288571}
-  - component: {fileID: 3004103382860122487}
-  - component: {fileID: 6395726752180785263}
   m_Layer: 0
   m_Name: EndDetection
   m_TagString: Untagged
@@ -225,51 +223,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3004103382860122487
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3748796522215598498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4076847037
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  m_InScenePlacedDisabledByDefault: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  m_InScenePlaced: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
---- !u!114 &6395726752180785263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3748796522215598498}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef8787ab4ed0f1c4b8da0bac0272f44f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameEndCountdown
-  ShowTopMostFoldoutHeaderGroup: 1
-  countdownCanvas: {fileID: 0}
-  countdownText: {fileID: 0}
-  duration: 10
-  scoreboardPanel: {fileID: 0}
-  scoreboardText: {fileID: 0}
 --- !u!1 &8180874366953180176
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +344,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5337441216475611353}
+  - component: {fileID: -5086876994326447421}
   m_Layer: 0
   m_Name: PlatformEnd
   m_TagString: Untagged
@@ -416,3 +370,15 @@ Transform:
   - {fileID: 7813797656264234141}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5086876994326447421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8993949581285105396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9696e665e30be64fb29c57075225600, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FactoryFrenzy.Shared::ElementView
