@@ -160,16 +160,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 1180189974
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 4175287436
+  InScenePlacedSourceGlobalObjectIdHash: 4175287436
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 0
+  m_InScenePlaced: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -187,7 +187,6 @@ GameObject:
   - component: {fileID: 8268947158575264841}
   - component: {fileID: 7652108097241174962}
   - component: {fileID: 3111247462824427314}
-  - component: {fileID: 4070227576753939703}
   m_Layer: 0
   m_Name: BumperCylinder
   m_TagString: Untagged
@@ -289,19 +288,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &4070227576753939703
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4758107322952490245}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfc74b296cd7c164dbbdc3726fa2911c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Bumper
-  ShowTopMostFoldoutHeaderGroup: 1
-  bumpVelocity: 20
-  stretchMultiplier: 1
-  stretchDuration: 0.2
