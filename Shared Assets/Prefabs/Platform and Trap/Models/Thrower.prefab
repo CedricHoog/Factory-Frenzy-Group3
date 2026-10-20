@@ -4977,7 +4977,7 @@ GameObject:
   - component: {fileID: 4600329776424339927}
   - component: {fileID: 5486561549734903105}
   m_Layer: 0
-  m_Name: TrapThrower
+  m_Name: Thrower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4991,14 +4991,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8525039061876082329}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2, y: 0, z: 5.405}
+  m_LocalRotation: {x: 0.007868183, y: -0.108200654, z: 0.97321635, w: -0.20268358}
+  m_LocalPosition: {x: -5.808789, y: 1.9999999, z: 5.4370418}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5048447542596727871}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 11.971, y: 3.468, z: -516.10803}
 --- !u!82 &140198138490227487
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5108,16 +5108,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3461831536
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 834702923
+  InScenePlacedSourceGlobalObjectIdHash: 3461831536
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 0
+  m_InScenePlaced: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1

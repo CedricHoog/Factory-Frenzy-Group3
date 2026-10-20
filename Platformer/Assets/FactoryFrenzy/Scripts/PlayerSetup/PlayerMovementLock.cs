@@ -1,4 +1,5 @@
 using System;
+using SUPERCharacter;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace FactoryFrenzy.Gameplay
 {
     public class PlayerMovementLock : NetworkBehaviour
     {
-        [SerializeField] private Behaviour controller;
+        [SerializeField] private SUPERCharacterAIO character;
         [SerializeField] private Rigidbody body;
 
         public static bool IsLocked { get; private set; }
@@ -30,15 +31,25 @@ namespace FactoryFrenzy.Gameplay
         public void MarkReady()
         {
             _ready = true;
+            character.enabled = true;
             Apply(IsLocked);
         }
 
         private void Apply(bool locked)
         {
             if (!_ready) return;
-            controller.enabled = !locked;
-            if (locked && body != null && !body.isKinematic)
-                body.linearVelocity = Vector3.zero;
+
+            // La caméra n'est pas touchée : seuls le déplacement et le saut sont coupés
+            character.enableMovementControl = !locked;
+            character.canJump = !locked;
+
+            if (locked)
+            {
+                // MovePlayer ne tourne plus, donc plus rien ne freine le joueur : on l'arrête
+                Vector3 v = body.linearVelocity;
+                body.linearVelocity = new Vector3(0f, v.y, 0f);
+                character.isIdle = true;
+            }
         }
     }
 }
