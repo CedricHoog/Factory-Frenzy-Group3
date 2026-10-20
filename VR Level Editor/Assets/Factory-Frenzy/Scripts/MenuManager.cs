@@ -15,13 +15,17 @@ public class MenuManager : MonoBehaviour
     
     [SerializeField] private Button swapButton;
 
+    private GameObject currentCanvas;
+    
+    private GameElementManager gameElementManager;
+
     void Start()
     {
         ShowElementMenu();
         ShowAddElementPanel();
         DeactivateSwapButton();
     }
-
+    
     public void ShowElementMenu() => ShowCanvas(elementMenuCanvas);
     public void ShowSaveMenu() => ShowCanvas(saveMenuCanvas);
     public void ShowLoadMenu() => ShowCanvas(loadMenuCanvas);
@@ -35,6 +39,16 @@ public class MenuManager : MonoBehaviour
     public void ActivateSwapButton() => SetInteractableSwapButton(true);
     public void DeactivateSwapButton() => SetInteractableSwapButton(false);
     
+    private void Awake()
+    {
+        gameElementManager = FindFirstObjectByType<GameElementManager>();
+        gameElementManager.Grabbed += OnItemGrabbed;
+    }
+    
+    private void OnItemGrabbed(int elementId)
+    {
+        ShowModifyElementPanel();
+    }
     
 
     private void ShowCanvas(GameObject target)
@@ -45,10 +59,13 @@ public class MenuManager : MonoBehaviour
 
         confirmExitCanvas.SetActive(target == confirmExitCanvas);
         confirmOverwriteCanvas.SetActive(target == confirmOverwriteCanvas);
+
+        currentCanvas = target;
     }
     
     private void ShowPanel(bool addMode)
     {
+        if (currentCanvas != elementMenuCanvas) return;
         if (addMode) SetInteractableSwapButton(false);
         addElementPanel.SetActive(addMode);
         modifyElementPanel.SetActive(!addMode);

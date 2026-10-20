@@ -1,5 +1,5 @@
 ﻿{
   "name": "FactoryFrenzy.Shared",
-  "references": [ "Unity.InputSystem" ],
+  "references": [ "Unity.InputSystem", "Unity.XR.Interaction.Toolkit"],
   "autoReferenced": true
 }
