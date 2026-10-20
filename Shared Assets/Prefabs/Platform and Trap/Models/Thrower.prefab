@@ -4973,8 +4973,11 @@ GameObject:
   m_Component:
   - component: {fileID: 8841389740430043283}
   - component: {fileID: 140198138490227487}
+  - component: {fileID: 5406813314510092027}
+  - component: {fileID: 4600329776424339927}
+  - component: {fileID: 5486561549734903105}
   m_Layer: 0
-  m_Name: TrapThrower
+  m_Name: Thrower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4988,14 +4991,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8525039061876082329}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2, y: 0, z: 5.405}
+  m_LocalRotation: {x: 0.007868183, y: -0.108200654, z: 0.97321635, w: -0.20268358}
+  m_LocalPosition: {x: -5.808789, y: 1.9999999, z: 5.4370418}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5048447542596727871}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 11.971, y: 3.468, z: -516.10803}
 --- !u!82 &140198138490227487
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5093,3 +5096,81 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5406813314510092027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8525039061876082329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 834702923
+  InScenePlacedSourceGlobalObjectIdHash: 3461831536
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &4600329776424339927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8525039061876082329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9642d7bdf21efb64b94f1916538c8d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrapShooterFSM
+  ShowTopMostFoldoutHeaderGroup: 1
+  currentState: 0
+  rotationPivot: {fileID: 5048447542596727871}
+  firePoint: {fileID: 7919971416225836588}
+  shotEffects: {fileID: 5486561549734903105}
+  projectilePrefab: {fileID: 2230590970671158076, guid: 331b689583dde6d4ab95b7b316b48432, type: 3}
+  spawnOffset: 0.35
+  activationDelay: 5
+  detectionRadius: 12
+  searchAngle: 70
+  searchSpeed: 50
+  orientationSpeed: 120
+  firingAngle: 30
+  shotInterval: 1.5
+  horizontalLaunch: 18
+  verticalLaunch: 9
+  shotClip: {fileID: 8300000, guid: c8e810efa36e5e64d918b5cf95fc6ebe, type: 3}
+--- !u!114 &5486561549734903105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8525039061876082329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 415c7ba9032db754b826924ddacdf587, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurretShotEffects
+  firePoint: {fileID: 7919971416225836588}
+  recoilBody: {fileID: 7000010826855385661}
+  muzzleFlash: {fileID: 7183075917506471396}
+  smokeFX: {fileID: 4970471261191491629}
+  impactPrefab: {fileID: 8899715088196048920, guid: 3762a9c54ce8bf54eba02cef7bf603f1, type: 3}
+  recoilDistance: 0.2
+  recoilBackTime: 0.06
+  recoilReturnTime: 0.18
+  impactClip: {fileID: 0}
+  impactVolume: 0.5
