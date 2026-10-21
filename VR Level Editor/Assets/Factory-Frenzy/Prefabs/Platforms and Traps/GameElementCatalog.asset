@@ -18,16 +18,16 @@ MonoBehaviour:
   - typeName: PlatformMoving
     prefab: {fileID: 0}
   - typeName: PlatformTrampoline
-    prefab: {fileID: -2737464329006863333, guid: 93170f4d776f451499930fafc0f52bbc, type: 3}
+    prefab: {fileID: -1535983466473208257, guid: fb26c94a115801749bff2d3509b36bc0, type: 3}
   - typeName: TrapBumper
-    prefab: {fileID: -81642853319638416, guid: 9b3cde31baf3f054b8131f9234f21a45, type: 3}
+    prefab: {fileID: -5896878710214087991, guid: 849ff699de583334caef41599907df8b, type: 3}
   - typeName: TrapFan
-    prefab: {fileID: 2582742428227253919, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+    prefab: {fileID: -7267064697574106454, guid: ef3dd04bb2303b149826374e16762d32, type: 3}
   - typeName: TrapThrower
-    prefab: {fileID: 2666723701193624826, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
+    prefab: {fileID: -2655811106211294242, guid: 2693bc1152e51ec418bcd4365ae25a79, type: 3}
   - typeName: Checkpoint
     prefab: {fileID: 0}
   - typeName: PlatformStart
-    prefab: {fileID: 7003678413820410434, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
+    prefab: {fileID: -7180827350631541345, guid: c914627fc4b0b324db5e2e40cf433439, type: 3}
   - typeName: PlatformEnd
-    prefab: {fileID: -1007946081388741551, guid: 9150dead2037d8041b4a21693d82dd44, type: 3}
+    prefab: {fileID: -3726437822016778932, guid: 5aba7790accc28440b8144b0b5db6227, type: 3}
