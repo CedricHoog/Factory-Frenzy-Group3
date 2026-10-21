@@ -1,82 +1,47 @@
-
-using UnityEngine;
+using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Components;
+using UnityEngine;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(NetworkTransform))]
 public class PlayerRespawn : NetworkBehaviour
 {
-    // ==========================================
-    // NETWORK AUTHORITY
-    // ==========================================
-
     public enum RespawnAuthority
     {
         Server,
         Owner
     }
 
-    [Header("Network Settings")]
+    [Header("Network settings")]
+    [SerializeField] private RespawnAuthority respawnAuthority = RespawnAuthority.Server;
 
-    [Tooltip("Must match the player's NetworkTransform authority.")]
-    [SerializeField]
-    private RespawnAuthority respawnAuthority =
-        RespawnAuthority.Server;
+    [Header("Respawn settings")]
+    [SerializeField, Min(0f)] private float respawnCooldown = 0.5f;
 
+    [Header("Runtime checkpoint progression")]
+    [SerializeField] private PlatformCheckpoint currentCheckpoint;
 
-    // ==========================================
-    // RESPAWN SETTINGS
-    // ==========================================
-
-    [Header("Respawn Settings")]
-
-    [SerializeField, Min(0f)]
-    private float respawnCooldown = 0.5f;
-
-
-    // ==========================================
-    // CHECKPOINT PROGRESSION
-    // ==========================================
-
-    private int lastCheckpointOrder = -1;
-
+    private readonly HashSet<PlatformCheckpoint> visitedCheckpoints = new();
     private Vector3 checkpointPosition;
     private Quaternion checkpointRotation;
-
     private bool hasCheckpoint;
     private float nextRespawnTime;
-
-    public int LastCheckpointOrder =>
-        lastCheckpointOrder;
-
-
-    // ==========================================
-    // COMPONENT REFERENCES
-    // ==========================================
 
     private CharacterController controller;
     private Rigidbody rb;
     private NetworkTransform networkTransform;
 
-
-    // ==========================================
-    // INITIALIZATION
-    // ==========================================
-
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
         rb = GetComponent<Rigidbody>();
-
-        networkTransform =
-            GetComponent<NetworkTransform>();
+        networkTransform = GetComponent<NetworkTransform>();
     }
 
     private void Start()
     {
-        // Initial fallback before the player
-        // reaches the first Game checkpoint.
+        // Fallback until the starting checkpoint is detected in Game.
         if (!hasCheckpoint)
         {
             checkpointPosition = transform.position;
@@ -85,125 +50,81 @@ public class PlayerRespawn : NetworkBehaviour
         }
     }
 
-
-    // ==========================================
-    // MOVEMENT AUTHORITY
-    // ==========================================
-
     public bool HasMovementAuthority()
     {
-        // Allow standalone tests without Netcode.
         if (!IsSpawned)
         {
-            var manager =
-                Unity.Netcode.NetworkManager.Singleton;
-
-            return manager == null ||
-                   !manager.IsListening;
+            var manager = Unity.Netcode.NetworkManager.Singleton;
+            return manager == null || !manager.IsListening;
         }
 
-        // In network mode, respect the configured
-        // movement authority.
-        if (respawnAuthority == RespawnAuthority.Server)
-        {
-            return IsServer;
-        }
-
-        return IsOwner;
+        return respawnAuthority == RespawnAuthority.Server ? IsServer : IsOwner;
     }
 
-
-    // ==========================================
-    // INITIAL SPAWN FALLBACK
-    // ==========================================
-
-    // Compatible with the optional call from
-    // PlayerSpawnManager.
+    // Optional initial spawn fallback; it never replaces an activated checkpoint.
     public void SetCheckpoint(Transform point)
     {
-        if (point == null || !HasMovementAuthority())
-            return;
-
-        // Do not overwrite an actual Game checkpoint.
-        if (lastCheckpointOrder >= 0)
+        if (point == null || !HasMovementAuthority() || currentCheckpoint != null)
             return;
 
         checkpointPosition = point.position;
         checkpointRotation = point.rotation;
-
         hasCheckpoint = true;
     }
 
-
-    // ==========================================
-    // ACTIVATE A CHECKPOINT
-    // ==========================================
-
-    public bool TryActivateCheckpoint(
-        int checkpointOrder,
-        Transform respawnPoint)
+    // No checkpoint numbers: the first visit to any new platform advances progress.
+    public bool TryActivateCheckpoint(PlatformCheckpoint checkpoint)
     {
-        if (!HasMovementAuthority())
+        if (checkpoint == null)
             return false;
 
-        if (respawnPoint == null || checkpointOrder < 0)
+        // Only the server or the local owner tracks this player's progression.
+        if (IsSpawned && !IsServer && !IsOwner)
             return false;
 
-        // Never downgrade checkpoint progression.
-        if (checkpointOrder <= lastCheckpointOrder)
+        // Reaching Start again must not override a checkpoint further into the race.
+        if (checkpoint.IsStartingCheckpoint && visitedCheckpoints.Count > 0)
             return false;
 
-        lastCheckpointOrder = checkpointOrder;
+        // Do not reactivate an older checkpoint when the player revisits it.
+        if (!visitedCheckpoints.Add(checkpoint))
+            return false;
 
-        checkpointPosition = respawnPoint.position;
-        checkpointRotation = respawnPoint.rotation;
+        // Each client changes visuals for its OWN player only.
+        // On the server, remote players' checkpoints should not recolor the host's view.
+        if (!IsSpawned || IsOwner)
+        {
+            if (currentCheckpoint != null)
+                currentCheckpoint.SetVisualActive(false);
 
-        hasCheckpoint = true;
+            checkpoint.SetVisualActive(true);
+        }
 
-        Debug.Log(
-            $"Checkpoint {lastCheckpointOrder} activated " +
-            $"by {gameObject.name}. " +
-            $"Respawn position: {checkpointPosition}",
-            this
-        );
+        currentCheckpoint = checkpoint;
 
+        // Save the destination only where the NetworkTransform can be teleported.
+        if (HasMovementAuthority())
+        {
+            checkpointPosition = checkpoint.RespawnPoint.position;
+            checkpointRotation = checkpoint.RespawnPoint.rotation;
+            hasCheckpoint = true;
+        }
+
+        Debug.Log($"[CHECKPOINT] {gameObject.name} reached {checkpoint.name}", this);
         return true;
     }
 
-
-    // ==========================================
-    // RESPAWN
-    // ==========================================
-
     public void Respawn()
     {
-        if (!HasMovementAuthority())
+        if (!HasMovementAuthority() || !hasCheckpoint || Time.time < nextRespawnTime)
             return;
 
-        if (!hasCheckpoint)
-        {
-            Debug.LogWarning(
-                "PlayerRespawn: No checkpoint saved.",
-                this
-            );
-            return;
-        }
+        nextRespawnTime = Time.time + respawnCooldown;
 
-        if (Time.time < nextRespawnTime)
-            return;
-
-        nextRespawnTime =
-            Time.time + respawnCooldown;
-
-        // Disable CharacterController temporarily.
-        bool controllerWasEnabled =
-            controller != null &&
-            controller.enabled;
-
-        if (controllerWasEnabled)
+        bool controllerEnabled = controller != null && controller.enabled;
+        if (controllerEnabled)
             controller.enabled = false;
 
-        // Reset Rigidbody velocity if dynamic.
         if (rb != null && !rb.isKinematic)
         {
             rb.linearVelocity = Vector3.zero;
@@ -212,7 +133,6 @@ public class PlayerRespawn : NetworkBehaviour
 
         if (IsSpawned && networkTransform != null)
         {
-            // Authoritative network teleportation.
             networkTransform.Teleport(
                 checkpointPosition,
                 checkpointRotation,
@@ -221,59 +141,35 @@ public class PlayerRespawn : NetworkBehaviour
         }
         else
         {
-            // Standalone fallback.
-            transform.SetPositionAndRotation(
-                checkpointPosition,
-                checkpointRotation
-            );
+            transform.SetPositionAndRotation(checkpointPosition, checkpointRotation);
         }
 
         Physics.SyncTransforms();
 
-        if (controllerWasEnabled)
+        if (controllerEnabled)
             controller.enabled = true;
 
-        Debug.Log(
-            $"{gameObject.name} respawned at checkpoint " +
-            $"{lastCheckpointOrder}",
-            this
-        );
+        Debug.Log($"[RESPAWN] {gameObject.name} at {checkpointPosition}", this);
     }
 
-
-    // ==========================================
-    // RESET FOR ANOTHER RACE
-    // ==========================================
-
+    // Call when a new race starts and the same player object is reused.
     public void ResetCheckpointProgress()
     {
-        if (!HasMovementAuthority())
+        if (IsSpawned && !IsServer && !IsOwner)
             return;
 
-        lastCheckpointOrder = -1;
+        if (!IsSpawned || IsOwner)
+        {
+            foreach (PlatformCheckpoint checkpoint in visitedCheckpoints)
+                if (checkpoint != null)
+                    checkpoint.ClearVisualProgress();
+        }
 
+        visitedCheckpoints.Clear();
+        currentCheckpoint = null;
         checkpointPosition = transform.position;
         checkpointRotation = transform.rotation;
-
         hasCheckpoint = true;
         nextRespawnTime = 0f;
-    }
-
-
-    // ==========================================
-    // DEBUG
-    // ==========================================
-
-    private void OnDrawGizmosSelected()
-    {
-        if (!Application.isPlaying || !hasCheckpoint)
-            return;
-
-        Gizmos.color = Color.green;
-
-        Gizmos.DrawWireSphere(
-            checkpointPosition,
-            0.4f
-        );
     }
 }

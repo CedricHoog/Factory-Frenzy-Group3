@@ -1,28 +1,26 @@
-
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 public class PlatformCheckpoint : MonoBehaviour
 {
-    // ==========================================
-    // CHECKPOINT SETTINGS
-    // ==========================================
+    [Header("Respawn")]
+    [SerializeField] private Transform respawnPoint;
+    [SerializeField] private bool isStartingCheckpoint;
 
-    [Header("Checkpoint Settings")]
+    [Header("Visuals (not required for the starting platform)")]
+    [SerializeField] private Renderer checkpointPadRenderer;
+    [SerializeField] private Material baseMaterial;
+    [SerializeField] private Material activeMaterial;
 
-    [Tooltip("0 = Start, 1 = First checkpoint, etc.")]
-    [SerializeField, Min(0)]
-    private int checkpointOrder = 1;
+    [Header("Runtime state — do not set these manually")]
+    [SerializeField] private bool isActive;
+    [SerializeField] private bool hasBeenReached;
 
-    [Tooltip("Where the player respawns.")]
-    [SerializeField]
-    private Transform respawnPoint;
-
-
-    // ==========================================
-    // DEFAULT PHYSICS CONFIGURATION
-    // ==========================================
+    public bool IsActive => isActive;
+    public bool HasBeenReached => hasBeenReached;
+    public bool IsStartingCheckpoint => isStartingCheckpoint;
+    public Transform RespawnPoint => respawnPoint != null ? respawnPoint : transform;
 
     private void Reset()
     {
@@ -30,72 +28,69 @@ public class PlatformCheckpoint : MonoBehaviour
         box.isTrigger = true;
 
         Rigidbody body = GetComponent<Rigidbody>();
-
         body.useGravity = false;
         body.isKinematic = true;
     }
 
-
-    // ==========================================
-    // TRIGGER EVENTS
-    // ==========================================
+    private void Awake()
+    {
+        isActive = false;
+        hasBeenReached = false;
+        UpdatePadMaterial();
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        RegisterCheckpoint(other);
+        TryRegister(other);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        // Also handles a player already standing
-        // inside the trigger on scene load.
-        RegisterCheckpoint(other);
+        // Also detects players spawned directly inside the starting trigger.
+        TryRegister(other);
     }
 
-
-    // ==========================================
-    // SAVE PLAYER PROGRESSION
-    // ==========================================
-
-    private void RegisterCheckpoint(Collider other)
+    private void TryRegister(Collider other)
     {
-        PlayerRespawn player =
-            other.GetComponentInParent<PlayerRespawn>();
-
+        PlayerRespawn player = other.GetComponentInParent<PlayerRespawn>();
         if (player == null)
             return;
 
-        if (!player.HasMovementAuthority())
-            return;
-
-        Transform point =
-            respawnPoint != null
-                ? respawnPoint
-                : transform;
-
-        player.TryActivateCheckpoint(
-            checkpointOrder,
-            point
-        );
+        player.TryActivateCheckpoint(this);
     }
 
+    // Called by PlayerRespawn for the LOCAL player's checkpoint visuals.
+    public void SetVisualActive(bool active)
+    {
+        isActive = active;
+        if (active)
+            hasBeenReached = true;
 
-    // ==========================================
-    // EDITOR GIZMOS
-    // ==========================================
+        UpdatePadMaterial();
+    }
+
+    public void ClearVisualProgress()
+    {
+        isActive = false;
+        hasBeenReached = false;
+        UpdatePadMaterial();
+    }
+
+    private void UpdatePadMaterial()
+    {
+        if (checkpointPadRenderer == null)
+            return;
+
+        // An old checkpoint stays green even after it is deactivated.
+        Material wanted = hasBeenReached ? activeMaterial : baseMaterial;
+        if (wanted != null)
+            checkpointPadRenderer.sharedMaterial = wanted;
+    }
 
     private void OnDrawGizmosSelected()
     {
-        Transform point =
-            respawnPoint != null
-                ? respawnPoint
-                : transform;
-
+        Transform point = RespawnPoint;
         Gizmos.color = Color.green;
-
-        Gizmos.DrawWireSphere(
-            point.position,
-            0.3f
-        );
+        Gizmos.DrawWireSphere(point.position, 0.3f);
     }
 }

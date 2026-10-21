@@ -340,7 +340,6 @@ GameObject:
   - component: {fileID: 5777850121181576591}
   - component: {fileID: 1971730306410396732}
   - component: {fileID: 8255490628015565540}
-  - component: {fileID: 7331096389440872068}
   m_Layer: 0
   m_Name: CheckpointZone
   m_TagString: Untagged
@@ -411,19 +410,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7331096389440872068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3288216289738158761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1159748c32360d543af89223492a497e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlatformCheckpoint
-  respawnPoint: {fileID: 1301143625081033491}
 --- !u!1 &4523438916513320283
 GameObject:
   m_ObjectHideFlags: 0
