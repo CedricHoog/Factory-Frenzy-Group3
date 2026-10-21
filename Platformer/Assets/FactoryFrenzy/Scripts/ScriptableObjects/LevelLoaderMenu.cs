@@ -19,7 +19,7 @@ public class LevelLoaderMenu : MonoBehaviour
     [SerializeField] private TMP_Text fileNameText;       // FileNameText
 
     [Header("Liste des fichiers")]
-    [SerializeField] private Transform Content;           // Scroll View > Viewport > Content
+    [SerializeField] private Transform listContent;       // Scroll View > Viewport > Content
     [SerializeField] private GameObject emptyText;        // EmptyText
     [SerializeField] private Button levelButtonPrefab;    // un bouton avec un TMP en enfant
 
@@ -87,20 +87,6 @@ public class LevelLoaderMenu : MonoBehaviour
     private void OnLoadFileClicked()
     {
         if (!IsHost) return;
-        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sélectionné
-
-        string json = File.ReadAllText(_selectedPath);
-
-        if (!LevelParser.TryParse(json, out var entries, out string error))
-        {
-            Debug.LogError($"JSON invalide : {error}");
-            fileNameText.text = "Fichier invalide";
-            return;
-        }
-
-        LevelSelection.Set(Path.GetFileName(_selectedPath), json);
-        Debug.Log($"Niveau chargé : {LevelSelection.FileName} ({entries.Count} éléments)");
-        SetMenuOpen(false);
     }
 
     private void OnCancelClicked()
@@ -138,7 +124,7 @@ public class LevelLoaderMenu : MonoBehaviour
     {
         UpdateFileNameText();
 
-        foreach (Transform child in Content)
+        foreach (Transform child in listContent)
             Destroy(child.gameObject);
 
         Directory.CreateDirectory(FolderPath);
@@ -149,7 +135,7 @@ public class LevelLoaderMenu : MonoBehaviour
         foreach (string file in files)
         {
             string captured = file;
-            Button b = Instantiate(levelButtonPrefab, Content);
+            Button b = Instantiate(levelButtonPrefab, listContent);
             b.GetComponentInChildren<TMP_Text>().text = Path.GetFileName(file);
             b.onClick.AddListener(() => SelectFile(captured));
         }
