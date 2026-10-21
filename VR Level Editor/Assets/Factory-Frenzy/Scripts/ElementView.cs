@@ -20,7 +20,9 @@ public class ElementView : MonoBehaviour
     // data → scene object
     public void Apply()
     {
-        transform.localPosition = Element.position;
+        //NOTE might cause an issue when loading a level.
+        //If so, re-add this line & don't apply this transformation when using a slider on the modify menu
+        //transform.localPosition = Element.position; 
         transform.localRotation = Quaternion.Euler(Element.rotation);
         transform.localScale = Element.size;
     }
