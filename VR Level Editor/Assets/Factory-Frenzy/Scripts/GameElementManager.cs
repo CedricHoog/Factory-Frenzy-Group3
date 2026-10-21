@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class GameElementManager : MonoBehaviour
     [SerializeField] private ElementPrefabCatalog catalog;
     [SerializeField] private Transform levelRoot;
     [SerializeField] private Transform spawnAnchor;
+    
+    private string SaveFolder => SharedPaths.Levels;
 
     public int selectedGameElementId;
 
@@ -33,6 +36,40 @@ public class GameElementManager : MonoBehaviour
     public void SaveToJSON()
     {
         //TODO File.WriteAllText(path, JsonUtility.ToJson(level, true));
+        
+        LevelSaveData saveData = CreateSaveData(level);
+        string json = JsonUtility.ToJson(saveData, true);
+        
+        string path = Path.Combine(
+            SaveFolder,
+            "test_name.json"
+        );
+        
+        File.WriteAllText(path, json);
+        Debug.Log($"Level saved to: {path}");
+    }
+    
+    public LevelSaveData CreateSaveData(LevelData level)
+    {
+        LevelSaveData saveData = new LevelSaveData
+        {
+            version = level.version,
+            nextId = level.nextId
+        };
+
+        foreach (GameElement element in level.elements)
+        {
+            saveData.elements.Add(new GameElementSaveData
+            {
+                id = element.id,
+                name = element.Name,
+                position = element.position,
+                size = element.size,
+                rotation = element.rotation
+            });
+        }
+
+        return saveData;
     }
 
     public void LoadFromJSON()
