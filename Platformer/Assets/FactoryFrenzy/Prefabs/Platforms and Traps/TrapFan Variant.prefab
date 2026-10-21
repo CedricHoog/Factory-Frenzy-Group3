@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4790880782739026349
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1934238135726665566, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3538572305527382413, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_Name
+      value: TrapFan Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393602361860230359, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5783543527396755842, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 6605166045018798699, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+    - {fileID: -5902934527511017099, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+    - {fileID: 2582742428227253919, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4393602361860230359, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 260953356752827824}
+  m_SourcePrefab: {fileID: 100100000, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+--- !u!4 &5551619458599152068 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1114624189841889385, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+  m_PrefabInstance: {fileID: 4790880782739026349}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &9116858641307712890 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4393602361860230359, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+  m_PrefabInstance: {fileID: 4790880782739026349}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &260953356752827824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9116858641307712890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a270481a8a78d440bcf6a9e80669264, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Fan
+  windAcceleration: 100
+  _fanRotation: {fileID: 5551619458599152068}
+  _fanRotateSpeed: 1000
