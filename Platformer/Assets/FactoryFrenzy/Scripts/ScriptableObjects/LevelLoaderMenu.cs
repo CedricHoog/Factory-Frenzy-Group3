@@ -19,7 +19,7 @@ public class LevelLoaderMenu : MonoBehaviour
     [SerializeField] private TMP_Text fileNameText;       // FileNameText
 
     [Header("Liste des fichiers")]
-    [SerializeField] private Transform Content;           // Scroll View > Viewport > Content
+    [SerializeField] private Transform Content;       // Scroll View > Viewport > Content
     [SerializeField] private GameObject emptyText;        // EmptyText
     [SerializeField] private Button levelButtonPrefab;    // un bouton avec un TMP en enfant
 
