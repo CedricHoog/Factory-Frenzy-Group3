@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.Globalization;
 
@@ -10,13 +11,17 @@ public class ConfirmSave : MonoBehaviour
 {
     [SerializeField] private TMP_Text input;
     [SerializeField] private TMP_Text statusLabel;
-
-    [SerializeField] private string newText = "New level";
-    [SerializeField] private string overwriteText = "Will overwrite existing level";
-    [SerializeField] private string emptyText = "";
+    
+    [SerializeField] private string invalidText = "Your level needs EXACTLY 1 starting platform and 1 ending platform.";
+    [SerializeField] private string newText = "Confirm save.";
+    [SerializeField] private string overwriteText = "A file already has that name. Overwrite existing level ?";
+    [SerializeField] private string emptyText = "Your file has no name.";
 
     [SerializeField] private string folder;
+    [SerializeField] private Button saveButton;
     private string lastRaw;
+    
+    public GameElementManager manager;
 
     void Awake()
     {
@@ -47,10 +52,23 @@ public class ConfirmSave : MonoBehaviour
     public void UpdateLabel(string raw)
     {
         string name = Normalize(raw);
+        
+        if (manager == null) manager = FindFirstObjectByType<GameElementManager>();
+        bool levelValid = manager != null && manager.HasValidStartAndEnd;
 
+        if (!levelValid)
+        {
+            statusLabel.text = invalidText;
+        }
+        
+        else
+        {
+            
         statusLabel.text = string.IsNullOrEmpty(name) ? emptyText
             : Exists(name)                            ? overwriteText
             :                                           newText;
+        }
+        saveButton.interactable = levelValid && !string.IsNullOrEmpty(name);
     }
 
     string Normalize(string raw)

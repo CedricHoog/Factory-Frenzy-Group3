@@ -31120,9 +31120,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ConfirmSave
   input: {fileID: 7393819896463889375}
   statusLabel: {fileID: 2009332900254434776}
+  invalidText: Your level needs 1 starting platform and 1 ending platform
   newText: Confirm save.
   overwriteText: A file already has that name. Overwrite existing level ?
-  emptyText: Your file has no name. Are you sure ?
+  emptyText: Your file has no name.
+  folder: 
+  saveButton: {fileID: 237793459243928914}
+  manager: {fileID: 0}
 --- !u!1 &8431471750750231918
 GameObject:
   m_ObjectHideFlags: 0

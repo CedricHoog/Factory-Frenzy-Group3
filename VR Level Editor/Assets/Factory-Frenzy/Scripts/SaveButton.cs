@@ -12,7 +12,7 @@ public class SaveButton : MonoBehaviour
     private GameElementManager manager;
     private Button button;
 
-    [SerializeField] private TMP_Text fileNameInput;
+    [SerializeField] private TMP_Text fileNameInput;    
     
 
     void Start()
