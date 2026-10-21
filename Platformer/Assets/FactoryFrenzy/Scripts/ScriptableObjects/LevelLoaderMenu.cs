@@ -15,11 +15,11 @@ public class LevelLoaderMenu : MonoBehaviour
     [Header("Canvas")]
     [SerializeField] private GameObject menuCanvas;       // LoadMenuCanvas
 
-    [Header("Fichier sï¿½lectionnï¿½")]
+    [Header("Fichier sélectionné")]
     [SerializeField] private TMP_Text fileNameText;       // FileNameText
 
     [Header("Liste des fichiers")]
-    [SerializeField] private Transform Content;           // Scroll View > Viewport > Content
+    [SerializeField] private Transform listContent;       // Scroll View > Viewport > Content
     [SerializeField] private GameObject emptyText;        // EmptyText
     [SerializeField] private Button levelButtonPrefab;    // un bouton avec un TMP en enfant
 
@@ -27,7 +27,7 @@ public class LevelLoaderMenu : MonoBehaviour
     [SerializeField] private Button loadFileButton;       // LoadFile Button
     [SerializeField] private Button cancelButton;         // CancelLoad Button
 
-    [Header("Dossier des niveaux (relatif ï¿½ la racine du dï¿½pï¿½t)")]
+    [Header("Dossier des niveaux (relatif à la racine du dépôt)")]
     [SerializeField] private string repoRelativeFolder = "Shared Assets/levels";
 
     private string _selectedPath = "";
@@ -63,7 +63,7 @@ public class LevelLoaderMenu : MonoBehaviour
 
     private void Update()
     {
-        if (!IsHost) return; // seul l'hï¿½te peut ouvrir le menu
+        if (!IsHost) return; // seul l'hôte peut ouvrir le menu
 
         if (Keyboard.current != null && Keyboard.current.lKey.wasPressedThisFrame)
             SetMenuOpen(!menuCanvas.activeSelf);
@@ -87,34 +87,6 @@ public class LevelLoaderMenu : MonoBehaviour
     private void OnLoadFileClicked()
     {
         if (!IsHost) return;
-        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sï¿½lectionnï¿½
-
-        string json = File.ReadAllText(_selectedPath);
-
-        if (!LevelParser.TryParse(json, out var entries, out string error))
-        {
-            Debug.LogError($"JSON invalide : {error}");
-            fileNameText.text = "Fichier invalide";
-            return;
-        }
-
-        LevelSelection.Set(Path.GetFileName(_selectedPath), json);
-        Debug.Log($"Niveau chargï¿½ : {LevelSelection.FileName} ({entries.Count} ï¿½lï¿½ments)");
-        SetMenuOpen(false);
-        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sï¿½lectionnï¿½
-
-        string json = File.ReadAllText(_selectedPath);
-
-        if (!LevelParser.TryParse(json, out var entries, out string error))
-        {
-            Debug.LogError($"JSON invalide : {error}");
-            fileNameText.text = "Fichier invalide";
-            return;
-        }
-
-        LevelSelection.Set(Path.GetFileName(_selectedPath), json);
-        Debug.Log($"Niveau chargï¿½ : {LevelSelection.FileName} ({entries.Count} ï¿½lï¿½ments)");
-        SetMenuOpen(false);
     }
 
     private void OnCancelClicked()
@@ -124,7 +96,7 @@ public class LevelLoaderMenu : MonoBehaviour
         SetMenuOpen(false);
     }
 
-    // ---------- Sï¿½lection ----------
+    // ---------- Sélection ----------
 
     private void SelectFile(string path)
     {
@@ -142,7 +114,7 @@ public class LevelLoaderMenu : MonoBehaviour
     private void UpdateFileNameText()
     {
         fileNameText.text = string.IsNullOrEmpty(_selectedPath)
-            ? "Aucun fichier sï¿½lectionnï¿½"
+            ? "Aucun fichier sélectionné"
             : Path.GetFileName(_selectedPath);
     }
 
@@ -152,7 +124,7 @@ public class LevelLoaderMenu : MonoBehaviour
     {
         UpdateFileNameText();
 
-        foreach (Transform child in Content)
+        foreach (Transform child in listContent)
             Destroy(child.gameObject);
 
         Directory.CreateDirectory(FolderPath);
@@ -163,7 +135,7 @@ public class LevelLoaderMenu : MonoBehaviour
         foreach (string file in files)
         {
             string captured = file;
-            Button b = Instantiate(levelButtonPrefab, Content);
+            Button b = Instantiate(levelButtonPrefab, listContent);
             b.GetComponentInChildren<TMP_Text>().text = Path.GetFileName(file);
             b.onClick.AddListener(() => SelectFile(captured));
         }
