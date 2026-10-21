@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
-
+using System.Linq; 
 
 public class GameElementManager : MonoBehaviour
 {
@@ -11,6 +11,12 @@ public class GameElementManager : MonoBehaviour
     [SerializeField] private ElementPrefabCatalog catalog;
     [SerializeField] private Transform levelRoot;
     [SerializeField] private Transform spawnAnchor;
+    
+
+    public int CountOf<T>() where T : GameElement => level.elements.OfType<T>().Count();
+
+    public bool HasValidStartAndEnd =>
+        CountOf<PlatformStart>() == 1 && CountOf<PlatformEnd>() == 1;
     
     private string SaveFolder => SharedPaths.Levels;
 
