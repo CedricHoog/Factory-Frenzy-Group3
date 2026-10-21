@@ -970,6 +970,96 @@ ReflectionProbe:
   m_UseOcclusionCulling: 1
   m_Importance: 1
   m_CustomBakedTexture: {fileID: 0}
+--- !u!1 &1276845494
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1276845496}
+  - component: {fileID: 1276845495}
+  - component: {fileID: 1276845497}
+  m_Layer: 0
+  m_Name: LevelBuilder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1276845495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276845494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2097695958
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!4 &1276845496
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276845494}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1276845497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276845494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7870f2d3cd048d942badd9a8b3f0e473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelBuilder
+  ShowTopMostFoldoutHeaderGroup: 1
+  catalog:
+  - name: Checkpoint
+    prefab: {fileID: -5876192413431424893, guid: 6fabbb08a05b50f4581c6ae0c16f0992, type: 3}
+  - name: Platform
+    prefab: {fileID: -605885309484111093, guid: 7dad2d0ac83cd1e47a2029c1a1ef3e9e, type: 3}
+  - name: PlatformEnd
+    prefab: {fileID: 3547304332696249045, guid: e8eddba6f7fe5ac4c80b93996d67439e, type: 3}
+  - name: PlatformStart
+    prefab: {fileID: -8517699404880372281, guid: c66dedc0191581a4a9c326739eba2d87, type: 3}
+  - name: PlatformTrampoline
+    prefab: {fileID: -8766599024095876316, guid: fead43ed9d9c76f43b1f8774c414263e, type: 3}
+  - name: TrapBumper
+    prefab: {fileID: 7157571310979976521, guid: 571b59b9e25157b4ea03a2f56a7f150f, type: 3}
+  - name: TrapFan
+    prefab: {fileID: 7882599043793742730, guid: 03fc3874b3dbafe4284fa5cf6b9c9d6a, type: 3}
+  - name: TrapThrower
+    prefab: {fileID: -2046306209232161742, guid: c4c4c092d9faaca4b80dd0b74b26203e, type: 3}
 --- !u!1 &1334200355
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,3 +1312,4 @@ SceneRoots:
   - {fileID: 21917742}
   - {fileID: 1804061436}
   - {fileID: 960945094}
+  - {fileID: 1276845496}
