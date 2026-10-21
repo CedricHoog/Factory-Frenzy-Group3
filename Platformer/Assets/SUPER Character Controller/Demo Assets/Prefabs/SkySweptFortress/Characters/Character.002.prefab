@@ -1613,6 +1613,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: -2600445583740941919}
+    - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3080786128096267683}
     - targetCorrespondingSourceObject: {fileID: 6817638360860843948, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8733747426371152433}
@@ -1704,7 +1707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2825421884
+  GlobalObjectIdHash: 3750128351
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
@@ -1944,6 +1947,22 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   billboardRoot: {fileID: 4260351635762879453}
   usernameText: {fileID: 8328091636003729378}
+--- !u!114 &3080786128096267683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3716647013259988195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb5a70e92b57c4b4f90d032700ee855e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerRespawn
+  ShowTopMostFoldoutHeaderGroup: 1
+  respawnAuthority: 1
+  respawnCooldown: 0.5
+  currentCheckpoint: {fileID: 0}
 --- !u!54 &3716647013259988207 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6817638361354391143, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
