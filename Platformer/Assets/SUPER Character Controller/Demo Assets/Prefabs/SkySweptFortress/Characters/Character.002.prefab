@@ -64,11 +64,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3670943069375293705}
-  m_Father: {fileID: 3716647013259988192}
+  m_Father: {fileID: 4260351635762879453}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1366222292209891836
@@ -935,6 +935,38 @@ Transform:
   m_Children: []
   m_Father: {fileID: 978244515752748454}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7110397664609869522
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4260351635762879453}
+  m_Layer: 2
+  m_Name: BillboardRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4260351635762879453
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7110397664609869522}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5947967257807175647}
+  m_Father: {fileID: 3716647013259988192}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7267122725441876751
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,6 +1300,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6817638360860843948, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
     - target: {fileID: 6817638361354391144, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1545,10 +1581,10 @@ PrefabInstance:
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6817638361354391144, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5947967257807175647}
+      addedObject: {fileID: 7373386787917838391}
     - targetCorrespondingSourceObject: {fileID: 6817638361354391144, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7373386787917838391}
+      addedObject: {fileID: 4260351635762879453}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
@@ -1574,6 +1610,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2023790671400551606}
+    - targetCorrespondingSourceObject: {fileID: 6817638361354391147, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -2600445583740941919}
     - targetCorrespondingSourceObject: {fileID: 6817638360860843948, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8733747426371152433}
@@ -1890,6 +1929,21 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   character: {fileID: 3716647013259988193}
   body: {fileID: 3716647013259988207}
+--- !u!114 &-2600445583740941919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3716647013259988195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27124397a3903da43b511c876a874a67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerPseudoOrientation
+  ShowTopMostFoldoutHeaderGroup: 1
+  billboardRoot: {fileID: 4260351635762879453}
+  usernameText: {fileID: 8328091636003729378}
 --- !u!54 &3716647013259988207 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6817638361354391143, guid: 486cca3eb6a1b544cb46ebc4cdac8b6b, type: 3}
