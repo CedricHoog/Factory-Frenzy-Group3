@@ -38,7 +38,7 @@ public class SaveButton : MonoBehaviour
 
     void SaveFile()
     {
-        string fileName = fileNameInput.text.Trim();
+        string fileName = fileNameInput.text.Replace("\u200B", "").Trim();
         manager.SaveToJSON(fileName);
     }
 
