@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: FactoryFrenzy.Shared::ElementPrefabCatalog
   entries:
   - typeName: Platform
-    prefab: {fileID: 0}
+    prefab: {fileID: 1242531501823219015, guid: 65f4c6f2ff90aa240ab5e21cd0af514c, type: 3}
   - typeName: PlatformMoving
     prefab: {fileID: 0}
   - typeName: PlatformTrampoline
@@ -26,7 +26,7 @@ MonoBehaviour:
   - typeName: TrapThrower
     prefab: {fileID: -2655811106211294242, guid: 2693bc1152e51ec418bcd4365ae25a79, type: 3}
   - typeName: Checkpoint
-    prefab: {fileID: 0}
+    prefab: {fileID: -2305348934331891292, guid: a68d48c82a31a5344b6b74ea5226a0fe, type: 3}
   - typeName: PlatformStart
     prefab: {fileID: -7180827350631541345, guid: c914627fc4b0b324db5e2e40cf433439, type: 3}
   - typeName: PlatformEnd
