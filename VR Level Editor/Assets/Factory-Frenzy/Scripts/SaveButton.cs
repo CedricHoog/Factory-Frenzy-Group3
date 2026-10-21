@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
+using System.Linq;
 
 
 
@@ -9,6 +11,9 @@ public class SaveButton : MonoBehaviour
 {
     private GameElementManager manager;
     private Button button;
+
+    [SerializeField] private TMP_Text fileNameInput;
+    
 
     void Start()
     {
@@ -20,13 +25,26 @@ public class SaveButton : MonoBehaviour
             Debug.LogError("GameElementManager not found!");
             return;
         }
+        
+        if (fileNameInput == null)
+        {
+            Debug.LogError("fileNameInput not found!");
+            return;
+        }
 
-        button.onClick.AddListener(manager.SaveToJSON);
+        button.onClick.AddListener(SaveFile);
+        
+    }
+
+    void SaveFile()
+    {
+        string fileName = fileNameInput.text.Replace("\u200B", "").Trim();
+        manager.SaveToJSON(fileName);
     }
 
     void OnDestroy()
     {
         if (button != null)
-            button.onClick.RemoveListener(manager.SaveToJSON);
+            button.onClick.RemoveListener(SaveFile);
     }
 }

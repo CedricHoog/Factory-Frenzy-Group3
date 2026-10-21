@@ -31,7 +31,7 @@ public class MenuManager : MonoBehaviour
     public void ShowLoadMenu() => ShowCanvas(loadMenuCanvas);
 
     public void ShowConfirmExitMenu() => ShowCanvas(confirmExitCanvas);
-    public void ShowConfirmOverwriteMenu() => ShowCanvas(confirmOverwriteCanvas);
+    public void ShowConfirmOverwriteMenu() => ShowCanvas(confirmOverwriteCanvas); //FIXME RENAME
 
     public void ShowAddElementPanel() => ShowPanel(true);
     public void ShowModifyElementPanel() => ShowPanel(false);
