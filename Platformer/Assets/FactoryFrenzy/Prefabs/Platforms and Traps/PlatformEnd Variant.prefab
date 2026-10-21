@@ -201,14 +201,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2472513019
+  GlobalObjectIdHash: 3834238704
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 0
+  m_InScenePlaced: 1
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -349,7 +349,7 @@ GameObject:
   - component: {fileID: 7050772475893148982}
   - component: {fileID: 8070303522426837924}
   m_Layer: 0
-  m_Name: GameStart
+  m_Name: GameCountdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -382,14 +382,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2465081246
+  GlobalObjectIdHash: 1665957446
   InScenePlacedSourceGlobalObjectIdHash: 0
   m_InScenePlacedDisabledByDefault: 0
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
-  m_InScenePlaced: 0
+  m_InScenePlaced: 1
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
@@ -564,7 +564,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4720638468810427013, guid: 542b263c52a9dd241910d0cfe4d125d9, type: 3}
       propertyPath: m_Name
-      value: StartCountdownText
+      value: CountdownText
       objectReference: {fileID: 0}
     - target: {fileID: 5136322964052352043, guid: 542b263c52a9dd241910d0cfe4d125d9, type: 3}
       propertyPath: m_text
@@ -698,7 +698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5749138802247232635, guid: 9150dead2037d8041b4a21693d82dd44, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5749138802247232635, guid: 9150dead2037d8041b4a21693d82dd44, type: 3}
       propertyPath: m_LocalRotation.w
