@@ -125,7 +125,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 269926172567746106, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
       propertyPath: m_Name
-      value: PlatformStart Variant
+      value: PlatformStart
       objectReference: {fileID: 0}
     - target: {fileID: 2237043999193494989, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
       propertyPath: m_LocalPosition.x
@@ -195,6 +195,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 269926172567746106, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2750966366985118757}
+    - targetCorrespondingSourceObject: {fileID: 269926172567746106, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8517699404880372281}
   m_SourcePrefab: {fileID: 100100000, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
 --- !u!4 &1038244693077716002 stripped
 Transform:
@@ -335,6 +338,33 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-8517699404880372281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3113556940550331304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!4 &3999469477842884703 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2237043999193494989, guid: 1375cde1085419f47a713d5ab7b119ee, type: 3}
