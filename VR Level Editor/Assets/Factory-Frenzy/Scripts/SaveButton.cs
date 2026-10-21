@@ -12,7 +12,8 @@ public class SaveButton : MonoBehaviour
     private GameElementManager manager;
     private Button button;
 
-    private TMP_Text fileNameText;
+    [SerializeField] private TMP_Text fileNameInput;
+    
 
     void Start()
     {
@@ -24,6 +25,12 @@ public class SaveButton : MonoBehaviour
             Debug.LogError("GameElementManager not found!");
             return;
         }
+        
+        if (fileNameInput == null)
+        {
+            Debug.LogError("fileNameInput not found!");
+            return;
+        }
 
         button.onClick.AddListener(SaveFile);
         
@@ -31,9 +38,7 @@ public class SaveButton : MonoBehaviour
 
     void SaveFile()
     {
-        GameObject obj = FindIncludingInactive("SaveName");
-        fileNameText = obj.GetComponent<TMP_Text>();
-        string fileName = fileNameText.text.Trim();
+        string fileName = fileNameInput.text.Trim();
         manager.SaveToJSON(fileName);
     }
 
@@ -41,12 +46,5 @@ public class SaveButton : MonoBehaviour
     {
         if (button != null)
             button.onClick.RemoveListener(SaveFile);
-    }
-    //FIXME THIS IS HORRIBLE. JUST FIND A WAY TO LINK THE TEXT (text gets unlinked)
-    GameObject FindIncludingInactive(string objectName)
-    {
-        return Resources.FindObjectsOfTypeAll<GameObject>()
-            .FirstOrDefault(go => go.name == objectName
-                && go.scene.IsValid());
     }
 }
