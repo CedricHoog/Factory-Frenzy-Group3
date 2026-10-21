@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using System.Linq;
 
 
 public class GameElementManager : MonoBehaviour
@@ -10,6 +11,10 @@ public class GameElementManager : MonoBehaviour
     [SerializeField] private ElementPrefabCatalog catalog;
     [SerializeField] private Transform levelRoot;
     [SerializeField] private Transform spawnAnchor;
+    
+    [SerializeField] private SnapModeController snapModeController;
+    [SerializeField] private SnapSettings snapSettings;
+    public IEnumerable<ElementView> Views => views.Values;
 
     public int selectedGameElementId;
 
@@ -27,6 +32,15 @@ public class GameElementManager : MonoBehaviour
     public void NotifyGrabbed(int elementId)
     {
         Grabbed?.Invoke(elementId);
+    }
+    
+    //FIXME probably call this with "Select Exited" in the game Element XRGrabInteractable. check grabbed and Notify Grabbed
+    private void TrySnapping(ElementView view)
+    {
+        Debug.Log("snap if enabled called");
+        if (snapModeController == null || !snapModeController.IsOn) return;
+        Pose p = ElementSnapper.Solve(view, Views.Where(v => v != view), snapSettings);
+        view.transform.SetPositionAndRotation(p.position, p.rotation);
     }
 
     

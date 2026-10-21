@@ -10,6 +10,10 @@ public class ElementView : MonoBehaviour
     public event Action<int> Grabbed; 
     public void NotifyGrabbed() => Grabbed?.Invoke(Element.id);
     
+    //FIXME I CANT REMEMBER HOW THIS WORKS
+    public event Action<int> UnGrabbed; 
+    public void TrySnapping() => UnGrabbed?.Invoke(Element.id);
+    
     public void Bind(GameElement e)
     {
         Element = e;
@@ -32,5 +36,14 @@ public class ElementView : MonoBehaviour
     {
         Element.position = transform.localPosition;
         Element.rotation = transform.localEulerAngles;
+    }
+    
+    // return the combined bounds of an element's colliders
+    public Bounds GetWorldBounds()
+    {
+        var cols = GetComponentsInChildren<Collider>();
+        var b = new Bounds(transform.position, Vector3.zero);
+        foreach (var c in cols) b.Encapsulate(c.bounds);
+        return b;
     }
 }
