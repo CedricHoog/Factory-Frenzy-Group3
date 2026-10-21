@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 
 
@@ -11,7 +12,7 @@ public class SaveButton : MonoBehaviour
     private GameElementManager manager;
     private Button button;
 
-    [SerializeField] private TMP_Text saveName;
+    private TMP_Text fileNameText;
 
     void Start()
     {
@@ -25,17 +26,14 @@ public class SaveButton : MonoBehaviour
         }
 
         button.onClick.AddListener(SaveFile);
-
-        if (saveName == null)
-        {
-            Debug.LogError("Filename TMP_Text is not assigned!");
-            return;
-        }
+        
     }
 
     void SaveFile()
     {
-        string fileName = saveName.text.Trim();
+        GameObject obj = FindIncludingInactive("SaveName");
+        fileNameText = obj.GetComponent<TMP_Text>();
+        string fileName = fileNameText.text.Trim();
         manager.SaveToJSON(fileName);
     }
 
@@ -43,5 +41,12 @@ public class SaveButton : MonoBehaviour
     {
         if (button != null)
             button.onClick.RemoveListener(SaveFile);
+    }
+    //FIXME THIS IS HORRIBLE. JUST FIND A WAY TO LINK THE TEXT (text gets unlinked)
+    GameObject FindIncludingInactive(string objectName)
+    {
+        return Resources.FindObjectsOfTypeAll<GameObject>()
+            .FirstOrDefault(go => go.name == objectName
+                && go.scene.IsValid());
     }
 }
