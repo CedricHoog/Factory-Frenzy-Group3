@@ -15,7 +15,7 @@ public class LevelLoaderMenu : MonoBehaviour
     [Header("Canvas")]
     [SerializeField] private GameObject menuCanvas;       // LoadMenuCanvas
 
-    [Header("Fichier sélectionné")]
+    [Header("Fichier sï¿½lectionnï¿½")]
     [SerializeField] private TMP_Text fileNameText;       // FileNameText
 
     [Header("Liste des fichiers")]
@@ -27,7 +27,7 @@ public class LevelLoaderMenu : MonoBehaviour
     [SerializeField] private Button loadFileButton;       // LoadFile Button
     [SerializeField] private Button cancelButton;         // CancelLoad Button
 
-    [Header("Dossier des niveaux (relatif à la racine du dépôt)")]
+    [Header("Dossier des niveaux (relatif ï¿½ la racine du dï¿½pï¿½t)")]
     [SerializeField] private string repoRelativeFolder = "Shared Assets/levels";
 
     private string _selectedPath = "";
@@ -63,7 +63,7 @@ public class LevelLoaderMenu : MonoBehaviour
 
     private void Update()
     {
-        if (!IsHost) return; // seul l'hôte peut ouvrir le menu
+        if (!IsHost) return; // seul l'hï¿½te peut ouvrir le menu
 
         if (Keyboard.current != null && Keyboard.current.lKey.wasPressedThisFrame)
             SetMenuOpen(!menuCanvas.activeSelf);
@@ -87,7 +87,7 @@ public class LevelLoaderMenu : MonoBehaviour
     private void OnLoadFileClicked()
     {
         if (!IsHost) return;
-        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sélectionné
+        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sï¿½lectionnï¿½
 
         string json = File.ReadAllText(_selectedPath);
 
@@ -99,7 +99,7 @@ public class LevelLoaderMenu : MonoBehaviour
         }
 
         LevelSelection.Set(Path.GetFileName(_selectedPath), json);
-        Debug.Log($"Niveau chargé : {LevelSelection.FileName} ({entries.Count} éléments)");
+        Debug.Log($"Niveau chargï¿½ : {LevelSelection.FileName} ({entries.Count} ï¿½lï¿½ments)");
         SetMenuOpen(false);
     }
 
@@ -110,7 +110,7 @@ public class LevelLoaderMenu : MonoBehaviour
         SetMenuOpen(false);
     }
 
-    // ---------- Sélection ----------
+    // ---------- Sï¿½lection ----------
 
     private void SelectFile(string path)
     {
@@ -128,7 +128,7 @@ public class LevelLoaderMenu : MonoBehaviour
     private void UpdateFileNameText()
     {
         fileNameText.text = string.IsNullOrEmpty(_selectedPath)
-            ? "Aucun fichier sélectionné"
+            ? "Aucun fichier sï¿½lectionnï¿½"
             : Path.GetFileName(_selectedPath);
     }
 
