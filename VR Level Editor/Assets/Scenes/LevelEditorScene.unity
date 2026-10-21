@@ -1471,7 +1471,7 @@ MonoBehaviour:
       m_SingletonActionBindings:
       - m_Name: 
         m_Id: fbd1d903-9fff-4c1b-b2c0-0d6f07b70884
-        m_Path: <XRController>/{TertiaryClick}
+        m_Path: <XRController>/{PrimaryButton}
         m_Interactions: 
         m_Processors: 
         m_Groups: 

@@ -163,7 +163,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1242531501823219015}
         m_TargetAssemblyTypeName: ElementView, Assembly-CSharp
-        m_MethodName: TrySnapping
+        m_MethodName: NotifyUnGrabbed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

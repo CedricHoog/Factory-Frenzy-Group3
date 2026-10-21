@@ -10,9 +10,8 @@ public class ElementView : MonoBehaviour
     public event Action<int> Grabbed; 
     public void NotifyGrabbed() => Grabbed?.Invoke(Element.id);
     
-    //FIXME I CANT REMEMBER HOW THIS WORKS
-    public event Action<int> UnGrabbed; 
-    public void TrySnapping() => UnGrabbed?.Invoke(Element.id);
+    public event Action<ElementView> UnGrabbed; 
+    public void NotifyUnGrabbed() => UnGrabbed?.Invoke(this);
     
     public void Bind(GameElement e)
     {

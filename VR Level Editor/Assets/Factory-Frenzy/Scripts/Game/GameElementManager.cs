@@ -34,11 +34,12 @@ public class GameElementManager : MonoBehaviour
         Grabbed?.Invoke(elementId);
     }
     
-    //FIXME probably call this with "Select Exited" in the game Element XRGrabInteractable. check grabbed and Notify Grabbed
     private void TrySnapping(ElementView view)
     {
         Debug.Log("snap if enabled called");
-        if (snapModeController == null || !snapModeController.IsOn) return;
+        if (snapModeController == null) return;
+        if (!snapModeController.IsOn) return;
+        //FIXME Current issues : How to calc this ? This should return the same position if there is no items closed. idk how to do this.
         Pose p = ElementSnapper.Solve(view, Views.Where(v => v != view), snapSettings);
         view.transform.SetPositionAndRotation(p.position, p.rotation);
     }
@@ -105,8 +106,10 @@ public class GameElementManager : MonoBehaviour
         SelectGameElement(element.id);
         
         view.Grabbed += SelectGameElement;
-        view.Grabbed += NotifyGrabbed //for the menu manager
-            ;
+        view.Grabbed += NotifyGrabbed; //for the menu manager
+        
+        view.UnGrabbed += TrySnapping;
+        
         return element;
     }
     // Call after changing a value on an element (on the sliders...), refreshes its scene object
