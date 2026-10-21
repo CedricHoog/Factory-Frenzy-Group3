@@ -11,7 +11,6 @@ namespace FactoryFrenzy.Gameplay
         [SerializeField] private PlayerMovementLock movementLock;
         [SerializeField] private GameObject cameraObject;
         [SerializeField] private Collider collider;
-        [SerializeField] private Rigidbody body;
 
         public override void OnNetworkSpawn()
         {
@@ -21,6 +20,14 @@ namespace FactoryFrenzy.Gameplay
             readyInput.enabled = true;
             playerData.PlayerPseudo.Value = MainMenu.Pseudo;
             movementLock.MarkReady();
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                Physics.IgnoreCollision(collision.collider, collider);
+            }
         }
 
     }
