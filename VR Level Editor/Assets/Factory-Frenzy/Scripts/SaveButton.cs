@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 
 
@@ -9,6 +10,8 @@ public class SaveButton : MonoBehaviour
 {
     private GameElementManager manager;
     private Button button;
+
+    [SerializeField] private TMP_Text saveName;
 
     void Start()
     {
@@ -21,12 +24,24 @@ public class SaveButton : MonoBehaviour
             return;
         }
 
-        button.onClick.AddListener(manager.SaveToJSON);
+        button.onClick.AddListener(SaveFile);
+
+        if (saveName == null)
+        {
+            Debug.LogError("Filename TMP_Text is not assigned!");
+            return;
+        }
+    }
+
+    void SaveFile()
+    {
+        string fileName = saveName.text.Trim();
+        manager.SaveToJSON(fileName);
     }
 
     void OnDestroy()
     {
         if (button != null)
-            button.onClick.RemoveListener(manager.SaveToJSON);
+            button.onClick.RemoveListener(SaveFile);
     }
 }

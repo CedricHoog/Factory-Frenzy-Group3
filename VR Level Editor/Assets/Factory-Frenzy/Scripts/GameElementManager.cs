@@ -33,16 +33,21 @@ public class GameElementManager : MonoBehaviour
     }
 
     
-    public void SaveToJSON()
+    public void SaveToJSON(string fileName)
     {
         //TODO File.WriteAllText(path, JsonUtility.ToJson(level, true));
+        
+        foreach (char c in Path.GetInvalidFileNameChars())
+        {
+            fileName = fileName.Replace(c, '_');
+        }
         
         LevelSaveData saveData = CreateSaveData(level);
         string json = JsonUtility.ToJson(saveData, true);
         
         string path = Path.Combine(
             SaveFolder,
-            "test_name.json"
+            fileName +".json"
         );
         
         File.WriteAllText(path, json);
