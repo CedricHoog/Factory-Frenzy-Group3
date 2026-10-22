@@ -44,6 +44,9 @@ public class GameElementManager : MonoBehaviour
         Pose p = ElementSnapper.Solve(view, Views.Where(v => v != view), snapSettings);
         view.transform.SetPositionAndRotation(p.position, p.rotation);
         Physics.SyncTransforms();
+        
+        view.WriteBack();
+        OnElementChanged?.Invoke(view.Element);
     }
 
     
