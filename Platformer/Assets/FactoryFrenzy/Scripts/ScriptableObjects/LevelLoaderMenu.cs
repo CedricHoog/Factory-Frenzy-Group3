@@ -101,6 +101,20 @@ public class LevelLoaderMenu : MonoBehaviour
         LevelSelection.Set(Path.GetFileName(_selectedPath), json);
         Debug.Log($"Niveau chargé : {LevelSelection.FileName} ({entries.Count} éléments)");
         SetMenuOpen(false);
+        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sï¿½lectionnï¿½
+
+        string json = File.ReadAllText(_selectedPath);
+
+        if (!LevelParser.TryParse(json, out var entries, out string error))
+        {
+            Debug.LogError($"JSON invalide : {error}");
+            fileNameText.text = "Fichier invalide";
+            return;
+        }
+
+        LevelSelection.Set(Path.GetFileName(_selectedPath), json);
+        Debug.Log($"Niveau chargï¿½ : {LevelSelection.FileName} ({entries.Count} ï¿½lï¿½ments)");
+        SetMenuOpen(false);
     }
 
     private void OnCancelClicked()
