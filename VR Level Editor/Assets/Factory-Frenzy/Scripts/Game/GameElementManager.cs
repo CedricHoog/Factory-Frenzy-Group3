@@ -14,9 +14,14 @@ public class GameElementManager : MonoBehaviour
     
     [SerializeField] private SnapModeController snapModeController;
     [SerializeField] private SnapSettings snapSettings;
-    public IEnumerable<ElementView> Views => views.Values;
-
+    
+    [Header("Debug")]
     public int selectedGameElementId;
+    
+    [Header("Snap sound")]
+    [SerializeField] private AudioSource audioSource;
+    public IEnumerable<ElementView> Views => views.Values;
+    
 
     public event Action<GameElement> OnSelectionChanged;
     public event Action<GameElement> OnElementChanged;
@@ -44,6 +49,8 @@ public class GameElementManager : MonoBehaviour
         Pose p = ElementSnapper.Solve(view, Views.Where(v => v != view), snapSettings);
         view.transform.SetPositionAndRotation(p.position, p.rotation);
         Physics.SyncTransforms();
+        
+        audioSource.Play();
         
         view.WriteBack();
         OnElementChanged?.Invoke(view.Element);
