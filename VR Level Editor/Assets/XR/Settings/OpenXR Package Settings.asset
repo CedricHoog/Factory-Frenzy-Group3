@@ -481,7 +481,7 @@ MonoBehaviour:
   lateLatchingDebug: 0
   optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegions: 0
+  m_hasMigratedMultiviewRenderRegions: 1
   spacewarpMotionVectorTextureFormat: 0
 --- !u!114 &-1370237258136201648
 MonoBehaviour:
@@ -812,7 +812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feeef8d85de8db242bdda70cc7ff5acd, type: 3}
   m_Name: OculusTouchControllerProfile Android
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.Interactions.OculusTouchControllerProfile
-  m_enabled: 0
+  m_enabled: 1
   nameUi: Oculus Touch Controller Profile
   version: 0.0.1
   featureIdInternal: com.unity.openxr.feature.input.oculustouch
@@ -917,27 +917,27 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.OpenXRSettings
   features:
-  - {fileID: -1868763732499077114}
-  - {fileID: -7787597443969418930}
-  - {fileID: 3849431552254475376}
-  - {fileID: 9120556455569146439}
-  - {fileID: -8600502467233449927}
-  - {fileID: 7789932567185632735}
   - {fileID: 2753205630244450911}
-  - {fileID: 8437220421350490811}
-  - {fileID: 4815563766125773007}
-  - {fileID: -4884351355777959610}
-  - {fileID: 3985804732478538341}
-  - {fileID: -2095837343979827621}
-  - {fileID: 2011276266633121051}
-  - {fileID: 1558163506194023273}
+  - {fileID: 3849431552254475376}
+  - {fileID: 7789932567185632735}
   - {fileID: 1964164856528405136}
-  - {fileID: 7933134448974442048}
-  - {fileID: 837729630119855263}
-  - {fileID: 233530642898612208}
-  - {fileID: -7367845164764287784}
   - {fileID: -1370237258136201648}
+  - {fileID: -8600502467233449927}
+  - {fileID: 4815563766125773007}
+  - {fileID: -7367845164764287784}
+  - {fileID: -4884351355777959610}
+  - {fileID: 8437220421350490811}
+  - {fileID: 233530642898612208}
+  - {fileID: 2011276266633121051}
+  - {fileID: -2095837343979827621}
   - {fileID: 2864089169254091934}
+  - {fileID: 7933134448974442048}
+  - {fileID: -7787597443969418930}
+  - {fileID: 3985804732478538341}
+  - {fileID: 1558163506194023273}
+  - {fileID: -1868763732499077114}
+  - {fileID: 9120556455569146439}
+  - {fileID: 837729630119855263}
   customLoaderName: 
   m_renderMode: 1
   m_latencyOptimization: 0
@@ -1134,6 +1134,6 @@ MonoBehaviour:
   m_symmetricProjection: 0
   m_optimizeMultiviewRenderRegions: 0
   m_multiviewRenderRegionsOptimizationMode: 0
-  m_hasMigratedMultiviewRenderRegionSetting: 0
+  m_hasMigratedMultiviewRenderRegionSetting: 1
   m_foveatedRenderingApi: 1
   m_useOpenXRPredictedTime: 1
