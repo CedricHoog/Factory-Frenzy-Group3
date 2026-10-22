@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+
+android {
+    namespace "com.factoryfrenzy.levelsave"
+    compileSdk 36
+
+    defaultConfig {
+        minSdk 26
+        targetSdk 36
+    }
+}
