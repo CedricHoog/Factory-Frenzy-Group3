@@ -22,24 +22,30 @@ public static class LevelParser
         error = "";
         try
         {
-            foreach (JObject o in JArray.Parse(json))
+            JObject root = JObject.Parse(json);
+
+            JArray elements = root["elements"] as JArray;
+            if (elements == null)
+            {
+                error = "Champ \"elements\" manquant.";
+                return false;
+            }
+
+            foreach (JObject o in elements)
             {
                 var e = new LevelEntry
                 {
-                    Id = (int)o["Id"],
-                    Name = (string)o["Name"],
-                    Position = ReadVec(o["Position"] ?? o["StartingPosition"])
+                    Id = (int)o["id"],
+                    Name = (string)o["name"],
+                    Position = ReadVec(o["position"]),
+                    Rotation = Quaternion.Euler(ReadVec(o["rotation"]))
                 };
 
-                if (o["Size"] != null) { e.HasSize = true; e.Size = ReadVec(o["Size"]); }
-                if (o["EndingPosition"] != null) e.EndPosition = ReadVec(o["EndingPosition"]);
-                if (o["MovementTime"] != null) e.MovementTime = (float)o["MovementTime"];
-
-                JToken ori = o["Orientation"];
-                if (ori != null)
-                    e.Rotation = ori.Type == JTokenType.Object
-                        ? Quaternion.Euler(ReadVec(ori))
-                        : Quaternion.Euler(0f, (float)ori, 0f);   // nombre = rotation en Y
+                if (o["size"] != null)
+                {
+                    e.HasSize = true;
+                    e.Size = ReadVec(o["size"]);
+                }
 
                 entries.Add(e);
             }
