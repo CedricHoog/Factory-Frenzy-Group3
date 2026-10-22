@@ -10,6 +10,9 @@ public class ElementView : MonoBehaviour
     public event Action<int> Grabbed; 
     public void NotifyGrabbed() => Grabbed?.Invoke(Element.id);
     
+    public event Action<ElementView> UnGrabbed; 
+    public void NotifyUnGrabbed() => UnGrabbed?.Invoke(this);
+    
     public void Bind(GameElement e)
     {
         Element = e;
@@ -32,5 +35,31 @@ public class ElementView : MonoBehaviour
     {
         Element.position = transform.localPosition;
         Element.rotation = transform.localEulerAngles;
+    }
+    
+    // return the combined bounds of an element's colliders
+    public Bounds GetWorldBounds()
+    {
+        bool found = false;
+        Bounds b = new Bounds(transform.position, Vector3.zero);
+
+        foreach (var c in GetComponentsInChildren<Collider>())
+        {
+            if (!c.enabled || c.isTrigger) continue;
+
+            if (!found) { b = c.bounds; found = true; }
+            else b.Encapsulate(c.bounds);
+        }
+
+        // fallback: no usable collider, use the visible meshes. This should never be called
+        if (!found)
+            Debug.Log("fallback for GetWorldBounds");
+            foreach (var r in GetComponentsInChildren<Renderer>())
+            {
+                if (!found) { b = r.bounds; found = true; }
+                else b.Encapsulate(r.bounds);
+            }
+
+        return b;
     }
 }

@@ -3,7 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine;
-using System.Linq; 
+using System.Linq;
+
 
 public class GameElementManager : MonoBehaviour
 {
@@ -11,6 +12,11 @@ public class GameElementManager : MonoBehaviour
     [SerializeField] private ElementPrefabCatalog catalog;
     [SerializeField] private Transform levelRoot;
     [SerializeField] private Transform spawnAnchor;
+    
+    [SerializeField] private SnapModeController snapModeController;
+    [SerializeField] private SnapSettings snapSettings;
+    
+    [Header("Debug")]
     
 
     public int CountOf<T>() where T : GameElement => level.elements.OfType<T>().Count();
@@ -21,6 +27,11 @@ public class GameElementManager : MonoBehaviour
     private string SaveFolder => SharedPaths.Levels;
 
     public int selectedGameElementId;
+    
+    [Header("Snap sound")]
+    [SerializeField] private AudioSource audioSource;
+    public IEnumerable<ElementView> Views => views.Values;
+    
 
     public event Action<GameElement> OnSelectionChanged;
     public event Action<GameElement> OnElementChanged;
@@ -37,9 +48,26 @@ public class GameElementManager : MonoBehaviour
     {
         Grabbed?.Invoke(elementId);
     }
+    
+    private void TrySnapping(ElementView view)
+    {
+        Debug.Log($"TrySnapping {snapModeController == null} || {!snapModeController.IsOn} || {snapSettings == null}");
+        if (snapModeController == null || !snapModeController.IsOn || snapSettings == null) return;
+        
+        view.transform.rotation = ElementSnapper.SnapRotation(view.transform.rotation, snapSettings.rotationStep);
+        
+        Pose p = ElementSnapper.Solve(view, Views.Where(v => v != view), snapSettings);
+        view.transform.SetPositionAndRotation(p.position, p.rotation);
+        Physics.SyncTransforms();
+        
+        audioSource.Play();
+        
+        view.WriteBack();
+        OnElementChanged?.Invoke(view.Element);
+    }
 
     
-    public void SaveToJSON(string fileName)
+    public void SaveToJSON()
     {
         //TODO File.WriteAllText(path, JsonUtility.ToJson(level, true));
         
@@ -139,8 +167,10 @@ public class GameElementManager : MonoBehaviour
         SelectGameElement(element.id);
         
         view.Grabbed += SelectGameElement;
-        view.Grabbed += NotifyGrabbed //for the menu manager
-            ;
+        view.Grabbed += NotifyGrabbed; //for the menu manager
+        
+        view.UnGrabbed += TrySnapping;
+        
         return element;
     }
     // Call after changing a value on an element (on the sliders...), refreshes its scene object
