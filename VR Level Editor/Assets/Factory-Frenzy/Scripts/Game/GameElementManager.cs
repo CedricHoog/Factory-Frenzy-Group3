@@ -239,9 +239,7 @@ public class GameElementManager : MonoBehaviour
         {
             Debug.Log($"test3 {view.IsUnlocked}");
             grab.trackPosition = view.IsUnlocked;
-            grab.trackRotation = view.IsUnlocked;
-            grab.trackScale = view.IsUnlocked;
-            
+
             Debug.Log($"test4 {grab.trackPosition}");
         }
     }
