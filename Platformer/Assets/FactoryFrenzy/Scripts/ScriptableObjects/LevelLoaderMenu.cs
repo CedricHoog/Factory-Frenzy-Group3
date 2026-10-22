@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -220,20 +219,20 @@ public class LevelLoaderMenu : MonoBehaviour
         {
             public System.IntPtr owner;
             public System.IntPtr root;
-            public StringBuilder displayName;
-            public string title;
+            public System.IntPtr displayName;
+            public System.IntPtr title;
             public uint flags;
             public System.IntPtr callback;
             public System.IntPtr callbackParameter;
             public int image;
         }
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, EntryPoint = "SHBrowseForFolderW")]
         private static extern System.IntPtr SHBrowseForFolder(ref BrowseInfo browseInfo);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, EntryPoint = "SHGetPathFromIDListW")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SHGetPathFromIDList(System.IntPtr itemIdList, StringBuilder path);
+        private static extern bool SHGetPathFromIDList(System.IntPtr itemIdList, System.IntPtr path);
 
         [DllImport("ole32.dll")]
         private static extern void CoTaskMemFree(System.IntPtr memory);
@@ -243,26 +242,48 @@ public class LevelLoaderMenu : MonoBehaviour
 
         public static string Open(string title)
         {
-            var browseInfo = new BrowseInfo
-            {
-                owner = GetActiveWindow(),
-                displayName = new StringBuilder(260),
-                title = title,
-                flags = BrowseForFileSystemDirectories | UseNewDialogStyle
-            };
-
-            System.IntPtr itemIdList = SHBrowseForFolder(ref browseInfo);
-            if (itemIdList == System.IntPtr.Zero)
-                return "";
-
+            System.IntPtr displayName = Marshal.AllocHGlobal(260 * sizeof(char));
+            System.IntPtr nativeTitle = Marshal.StringToHGlobalUni(title);
             try
             {
-                var path = new StringBuilder(260);
-                return SHGetPathFromIDList(itemIdList, path) ? path.ToString() : "";
+                var browseInfo = new BrowseInfo
+                {
+                    owner = GetActiveWindow(),
+                    displayName = displayName,
+                    title = nativeTitle,
+                    flags = BrowseForFileSystemDirectories | UseNewDialogStyle
+                };
+
+                System.IntPtr itemIdList = SHBrowseForFolder(ref browseInfo);
+                if (itemIdList == System.IntPtr.Zero)
+                    return "";
+
+                try
+                {
+                    System.IntPtr path = Marshal.AllocHGlobal(260 * sizeof(char));
+                    try
+                    {
+                        for (int index = 0; index < 260; index++)
+                            Marshal.WriteInt16(path, index * sizeof(char), 0);
+
+                        return SHGetPathFromIDList(itemIdList, path)
+                            ? Marshal.PtrToStringUni(path)
+                            : "";
+                    }
+                    finally
+                    {
+                        Marshal.FreeHGlobal(path);
+                    }
+                }
+                finally
+                {
+                    CoTaskMemFree(itemIdList);
+                }
             }
             finally
             {
-                CoTaskMemFree(itemIdList);
+                Marshal.FreeHGlobal(displayName);
+                Marshal.FreeHGlobal(nativeTitle);
             }
         }
     }
