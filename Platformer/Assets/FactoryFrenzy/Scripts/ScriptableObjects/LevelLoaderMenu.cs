@@ -1,4 +1,7 @@
+using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,8 +9,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor;
-#else
-using SFB; // UnityStandaloneFileBrowser (builds uniquement)
 #endif
 
 public class LevelLoaderMenu : MonoBehaviour
@@ -28,25 +29,12 @@ public class LevelLoaderMenu : MonoBehaviour
     [SerializeField] private Button cancelButton;         // CancelLoad Button
 
     [Header("Dossier des niveaux (relatif � la racine du d�p�t)")]
-    [SerializeField] private string repoRelativeFolder = "Shared Assets/levels";
-
     private string _selectedPath = "";
+    private string _selectedFolderPath = "";
 
     private static bool IsHost =>
         NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer;
 
-    private string FolderPath
-    {
-        get
-        {
-#if UNITY_EDITOR
-            string repoRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
-            return Path.GetFullPath(Path.Combine(repoRoot, repoRelativeFolder));
-#else
-        return Path.Combine(Application.persistentDataPath, "Levels");
-#endif
-        }
-    }
     private void Awake()
     {
         loadFileButton.onClick.AddListener(OnLoadFileClicked);
@@ -79,7 +67,18 @@ public class LevelLoaderMenu : MonoBehaviour
         Cursor.lockState = open ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = open;
 
-        if (open) RefreshList();
+        if (open)
+        {
+            _selectedPath = "";
+            if (TryChooseFolder(out _selectedFolderPath))
+                RefreshList();
+            else
+            {
+                ClearList();
+                emptyText.SetActive(true);
+                UpdateFileNameText();
+            }
+        }
     }
 
     // ---------- Les deux boutons ----------
@@ -89,7 +88,23 @@ public class LevelLoaderMenu : MonoBehaviour
         if (!IsHost) return;
         if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de s�lectionn�
 
-        string json = File.ReadAllText(_selectedPath);
+        string json;
+        try
+        {
+            json = File.ReadAllText(_selectedPath);
+        }
+        catch (IOException exception)
+        {
+            Debug.LogError($"Could not read level file '{_selectedPath}': {exception.Message}", this);
+            fileNameText.text = "Impossible de lire le fichier";
+            return;
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            Debug.LogError($"Access denied to level file '{_selectedPath}': {exception.Message}", this);
+            fileNameText.text = "Accès au fichier refusé";
+            return;
+        }
 
         if (!LevelParser.TryParse(json, out var entries, out string error))
         {
@@ -140,11 +155,25 @@ public class LevelLoaderMenu : MonoBehaviour
     {
         UpdateFileNameText();
 
-        foreach (Transform child in Content)
-            Destroy(child.gameObject);
+        ClearList();
 
-        Directory.CreateDirectory(FolderPath);
-        string[] files = Directory.GetFiles(FolderPath, "*.json");
+        string[] files;
+        try
+        {
+            files = Directory.GetFiles(_selectedFolderPath, "*.json", SearchOption.TopDirectoryOnly);
+        }
+        catch (IOException exception)
+        {
+            Debug.LogError($"Could not read JSON files from '{_selectedFolderPath}': {exception.Message}", this);
+            emptyText.SetActive(true);
+            return;
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            Debug.LogError($"Access denied to level folder '{_selectedFolderPath}': {exception.Message}", this);
+            emptyText.SetActive(true);
+            return;
+        }
 
         emptyText.SetActive(files.Length == 0);
 
@@ -156,4 +185,86 @@ public class LevelLoaderMenu : MonoBehaviour
             b.onClick.AddListener(() => SelectFile(captured));
         }
     }
+
+    private void ClearList()
+    {
+        foreach (Transform child in Content)
+            Destroy(child.gameObject);
+    }
+
+    private bool TryChooseFolder(out string folderPath)
+    {
+        folderPath = "";
+#if UNITY_EDITOR
+        folderPath = EditorUtility.OpenFolderPanel(
+            "Choose the folder containing level JSON files",
+            _selectedFolderPath,
+            "");
+#elif UNITY_STANDALONE_WIN
+        folderPath = WindowsFolderPicker.Open("Choose the folder containing level JSON files");
+#else
+        Debug.LogError("The level folder picker is supported only in the Unity Editor and Windows builds.", this);
+        return false;
+#endif
+        return !string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath);
+    }
+
+#if UNITY_STANDALONE_WIN
+    private static class WindowsFolderPicker
+    {
+        private const uint BrowseForFileSystemDirectories = 0x00000001;
+        private const uint UseNewDialogStyle = 0x00000040;
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct BrowseInfo
+        {
+            public System.IntPtr owner;
+            public System.IntPtr root;
+            public StringBuilder displayName;
+            public string title;
+            public uint flags;
+            public System.IntPtr callback;
+            public System.IntPtr callbackParameter;
+            public int image;
+        }
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern System.IntPtr SHBrowseForFolder(ref BrowseInfo browseInfo);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, EntryPoint = "SHGetPathFromIDListW")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SHGetPathFromIDList(System.IntPtr itemIdList, StringBuilder path);
+
+        [DllImport("ole32.dll")]
+        private static extern void CoTaskMemFree(System.IntPtr memory);
+
+        [DllImport("user32.dll")]
+        private static extern System.IntPtr GetActiveWindow();
+
+        public static string Open(string title)
+        {
+            var browseInfo = new BrowseInfo
+            {
+                owner = GetActiveWindow(),
+                displayName = new StringBuilder(260),
+                title = title,
+                flags = BrowseForFileSystemDirectories | UseNewDialogStyle
+            };
+
+            System.IntPtr itemIdList = SHBrowseForFolder(ref browseInfo);
+            if (itemIdList == System.IntPtr.Zero)
+                return "";
+
+            try
+            {
+                var path = new StringBuilder(260);
+                return SHGetPathFromIDList(itemIdList, path) ? path.ToString() : "";
+            }
+            finally
+            {
+                CoTaskMemFree(itemIdList);
+            }
+        }
+    }
+#endif
 }
