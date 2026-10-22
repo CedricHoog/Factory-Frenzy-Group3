@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using TMPro;
 using Unity.Netcode;
@@ -15,7 +16,7 @@ public class LevelLoaderMenu : MonoBehaviour
     [Header("Canvas")]
     [SerializeField] private GameObject menuCanvas;       // LoadMenuCanvas
 
-    [Header("Fichier sélectionné")]
+    [Header("Fichier sï¿½lectionnï¿½")]
     [SerializeField] private TMP_Text fileNameText;       // FileNameText
 
     [Header("Liste des fichiers")]
@@ -27,8 +28,11 @@ public class LevelLoaderMenu : MonoBehaviour
     [SerializeField] private Button loadFileButton;       // LoadFile Button
     [SerializeField] private Button cancelButton;         // CancelLoad Button
 
-    [Header("Dossier des niveaux (relatif à la racine du dépôt)")]
+    [Header("Dossier des niveaux (relatif ï¿½ la racine du dï¿½pï¿½t)")]
     [SerializeField] private string repoRelativeFolder = "Shared Assets/levels";
+
+    [Header("Synchronized Google Drive folder (optional local path)")]
+    [SerializeField] private string googleDriveLevelsFolder = "";
 
     private string _selectedPath = "";
 
@@ -39,6 +43,12 @@ public class LevelLoaderMenu : MonoBehaviour
     {
         get
         {
+            if (!string.IsNullOrWhiteSpace(googleDriveLevelsFolder))
+            {
+                string configuredPath = Environment.ExpandEnvironmentVariables(googleDriveLevelsFolder.Trim());
+                return configuredPath;
+            }
+
 #if UNITY_EDITOR
             string repoRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
             return Path.GetFullPath(Path.Combine(repoRoot, repoRelativeFolder));
@@ -63,7 +73,7 @@ public class LevelLoaderMenu : MonoBehaviour
 
     private void Update()
     {
-        if (!IsHost) return; // seul l'hôte peut ouvrir le menu
+        if (!IsHost) return; // seul l'hï¿½te peut ouvrir le menu
 
         if (Keyboard.current != null && Keyboard.current.lKey.wasPressedThisFrame)
             SetMenuOpen(!menuCanvas.activeSelf);
@@ -87,7 +97,7 @@ public class LevelLoaderMenu : MonoBehaviour
     private void OnLoadFileClicked()
     {
         if (!IsHost) return;
-        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sélectionné
+        if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sï¿½lectionnï¿½
 
         string json = File.ReadAllText(_selectedPath);
 
@@ -99,7 +109,7 @@ public class LevelLoaderMenu : MonoBehaviour
         }
 
         LevelSelection.Set(Path.GetFileName(_selectedPath), json);
-        Debug.Log($"Niveau chargé : {LevelSelection.FileName} ({entries.Count} éléments)");
+        Debug.Log($"Niveau chargï¿½ : {LevelSelection.FileName} ({entries.Count} ï¿½lï¿½ments)");
         SetMenuOpen(false);
         if (string.IsNullOrEmpty(_selectedPath)) return;   // rien de sï¿½lectionnï¿½
 
@@ -112,7 +122,7 @@ public class LevelLoaderMenu : MonoBehaviour
         SetMenuOpen(false);
     }
 
-    // ---------- Sélection ----------
+    // ---------- Sï¿½lection ----------
 
     private void SelectFile(string path)
     {
@@ -130,7 +140,7 @@ public class LevelLoaderMenu : MonoBehaviour
     private void UpdateFileNameText()
     {
         fileNameText.text = string.IsNullOrEmpty(_selectedPath)
-            ? "Aucun fichier sélectionné"
+            ? "Aucun fichier sï¿½lectionnï¿½"
             : Path.GetFileName(_selectedPath);
     }
 
@@ -143,8 +153,28 @@ public class LevelLoaderMenu : MonoBehaviour
         foreach (Transform child in Content)
             Destroy(child.gameObject);
 
-        Directory.CreateDirectory(FolderPath);
-        string[] files = Directory.GetFiles(FolderPath, "*.json");
+        string folderPath = FolderPath;
+        if (!Path.IsPathRooted(folderPath))
+        {
+            Debug.LogError($"The configured levels folder must be an absolute path: {folderPath}");
+            emptyText.SetActive(true);
+            return;
+        }
+        folderPath = Path.GetFullPath(folderPath);
+
+        if (!Directory.Exists(folderPath))
+        {
+            if (!string.IsNullOrWhiteSpace(googleDriveLevelsFolder))
+            {
+                Debug.LogError($"The configured Google Drive folder is unavailable: {folderPath}");
+                emptyText.SetActive(true);
+                return;
+            }
+
+            Directory.CreateDirectory(folderPath);
+        }
+
+        string[] files = Directory.GetFiles(folderPath, "*.json");
 
         emptyText.SetActive(files.Length == 0);
 
