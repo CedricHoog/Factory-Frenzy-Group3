@@ -2512,6 +2512,7 @@ MonoBehaviour:
   loadFileButton: {fileID: 3445419462686431587}
   cancelButton: {fileID: 763278909720551047}
   repoRelativeFolder: Shared Assets/levels
+  googleDriveLevelsFolder: G:\Mon Drive\levels
 --- !u!114 &763278909720551047 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4094219167343545941, guid: d5d9dad695d888344b112a96d0cbfec2, type: 3}
