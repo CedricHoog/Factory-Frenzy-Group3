@@ -36,12 +36,14 @@ public class GameElementManager : MonoBehaviour
     
     private void TrySnapping(ElementView view)
     {
-        Debug.Log("snap if enabled called");
-        if (snapModeController == null) return;
-        if (!snapModeController.IsOn) return;
-        //FIXME Current issues : How to calc this ? This should return the same position if there is no items closed. idk how to do this.
+        Debug.Log($"TrySnapping {snapModeController == null} || {!snapModeController.IsOn} || {snapSettings == null}");
+        if (snapModeController == null || !snapModeController.IsOn || snapSettings == null) return;
+        
+        view.transform.rotation = ElementSnapper.SnapRotation(view.transform.rotation, snapSettings.rotationStep);
+        
         Pose p = ElementSnapper.Solve(view, Views.Where(v => v != view), snapSettings);
         view.transform.SetPositionAndRotation(p.position, p.rotation);
+        Physics.SyncTransforms();
     }
 
     

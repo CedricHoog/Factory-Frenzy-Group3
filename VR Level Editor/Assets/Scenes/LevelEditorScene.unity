@@ -1708,7 +1708,7 @@ MonoBehaviour:
   catalog: {fileID: 11400000, guid: c0e1216f9ba9eeb4d86ca6ae6a615c1f, type: 2}
   levelRoot: {fileID: 1844744918}
   spawnAnchor: {fileID: 1620221738}
-  snapModeController: {fileID: 0}
+  snapModeController: {fileID: 1016636465}
   snapSettings: {fileID: 2041212165}
   selectedGameElementId: 0
 --- !u!4 &1265554440

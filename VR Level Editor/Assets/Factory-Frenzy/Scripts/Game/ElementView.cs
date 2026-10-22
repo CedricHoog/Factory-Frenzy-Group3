@@ -40,9 +40,26 @@ public class ElementView : MonoBehaviour
     // return the combined bounds of an element's colliders
     public Bounds GetWorldBounds()
     {
-        var cols = GetComponentsInChildren<Collider>();
-        var b = new Bounds(transform.position, Vector3.zero);
-        foreach (var c in cols) b.Encapsulate(c.bounds);
+        bool found = false;
+        Bounds b = new Bounds(transform.position, Vector3.zero);
+
+        foreach (var c in GetComponentsInChildren<Collider>())
+        {
+            if (!c.enabled || c.isTrigger) continue;
+
+            if (!found) { b = c.bounds; found = true; }
+            else b.Encapsulate(c.bounds);
+        }
+
+        // fallback: no usable collider, use the visible meshes. This should never be called
+        if (!found)
+            Debug.Log("fallback for GetWorldBounds");
+            foreach (var r in GetComponentsInChildren<Renderer>())
+            {
+                if (!found) { b = r.bounds; found = true; }
+                else b.Encapsulate(r.bounds);
+            }
+
         return b;
     }
 }
