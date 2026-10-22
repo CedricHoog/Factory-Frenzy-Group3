@@ -50,7 +50,7 @@ public class GameElementManager : MonoBehaviour
     private void TrySnapping(ElementView view)
     {
         Debug.Log($"TrySnapping {snapModeController == null} || {!snapModeController.IsOn} || {snapSettings == null}");
-        if (snapModeController == null || !snapModeController.IsOn || snapSettings == null) return;
+        if (snapModeController == null || !snapModeController.IsOn || snapSettings == null || !view.IsUnlocked ) return;
         
         view.transform.rotation = ElementSnapper.SnapRotation(view.transform.rotation, snapSettings.rotationStep);
         
