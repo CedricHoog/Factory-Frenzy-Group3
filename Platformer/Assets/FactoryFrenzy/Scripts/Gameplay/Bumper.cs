@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class Bumper : NetworkBehaviour
 {
-    [Header("Poussée")]
+    [Header("Poussï¿½e")]
     [SerializeField] private float bumpForce = 8f;     // vitesse horizontale en m/s
-    [SerializeField] private float upwardBoost = 2f;   // petit saut pour décoller du sol
+    [SerializeField] private float upwardBoost = 2f;   // petit saut pour dï¿½coller du sol
     [SerializeField] private float cooldown = 0.3f;
 
-    [Header("Animation (étirement en Z)")]
+    [Header("Animation (ï¿½tirement en Z)")]
     [SerializeField] private Transform target;
     [SerializeField] private float stretchMultiplier = 1.3f;
     [SerializeField] private float stretchDuration = 0.2f;
@@ -29,7 +29,7 @@ public class Bumper : NetworkBehaviour
 
     private void TryBump(Collider other)
     {
-        // Seul le propriétaire du joueur applique la force
+        // Seul le propriï¿½taire du joueur applique la force
         var player = other.GetComponentInParent<PlayerData>();
         if (player == null || !player.IsOwner) return;
 
@@ -44,7 +44,7 @@ public class Bumper : NetworkBehaviour
         if (dir.sqrMagnitude < 0.0001f) dir = -player.transform.forward;
         dir.Normalize();
 
-        // On remplace la vitesse actuelle pour une poussée constante
+        // On remplace la vitesse actuelle pour une poussï¿½e constante
         rb.linearVelocity = Vector3.zero;
         rb.AddForce(dir * bumpForce + Vector3.up * upwardBoost, ForceMode.VelocityChange);
 
@@ -64,7 +64,7 @@ public class Bumper : NetworkBehaviour
         Vector3 peak = new Vector3(
             _baseScale.x * stretchMultiplier,
             _baseScale.y * stretchMultiplier,
-            _baseScale.z);
+            _baseScale.z * stretchMultiplier);
         float half = stretchDuration / 2f;
 
         for (float t = 0f; t < 1f; t += Time.deltaTime / half)
