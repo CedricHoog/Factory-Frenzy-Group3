@@ -17,16 +17,14 @@ public class GameElementManager : MonoBehaviour
     [SerializeField] private SnapSettings snapSettings;
     
     [Header("Debug")]
-    
-
+    public int selectedGameElementId;
     public int CountOf<T>() where T : GameElement => level.elements.OfType<T>().Count();
 
     public bool HasValidStartAndEnd =>
         CountOf<PlatformStart>() == 1 && CountOf<PlatformEnd>() == 1;
     
     private string SaveFolder => SharedPaths.Levels;
-
-    public int selectedGameElementId;
+    
     
     [Header("Snap sound")]
     [SerializeField] private AudioSource audioSource;
@@ -67,7 +65,7 @@ public class GameElementManager : MonoBehaviour
     }
 
     
-    public void SaveToJSON()
+    public void SaveToJSON(string fileName)
     {
         //TODO File.WriteAllText(path, JsonUtility.ToJson(level, true));
         
