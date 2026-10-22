@@ -27,6 +27,7 @@ public class PlayerRespawn : NetworkBehaviour
     private Quaternion checkpointRotation;
     private bool hasCheckpoint;
     private float nextRespawnTime;
+    private float nextStartLookupTime;
 
     private CharacterController controller;
     private Rigidbody rb;
@@ -39,15 +40,52 @@ public class PlayerRespawn : NetworkBehaviour
         networkTransform = GetComponent<NetworkTransform>();
     }
 
-    private void Start()
+    public override void OnNetworkSpawn()
     {
-        // Fallback until the starting checkpoint is detected in Game.
-        if (!hasCheckpoint)
+        // Game might not yet be loaded when the player network object spawns.
+        // Update() will retry finding the starting checkpoint after scene load.
+        TryFindStartingCheckpoint();
+    }
+
+    private void Update()
+    {
+        // Never use the player's current position as an automatic fallback:
+        // it may be outside the map or inside the FallZone.
+        if (!HasMovementAuthority() || hasCheckpoint || Time.time < nextStartLookupTime)
+            return;
+
+        nextStartLookupTime = Time.time + 0.5f;
+        TryFindStartingCheckpoint();
+    }
+
+    private void TryFindStartingCheckpoint()
+    {
+        if (!HasMovementAuthority() || hasCheckpoint)
+            return;
+
+        PlatformCheckpoint[] checkpoints =
+            FindObjectsByType<PlatformCheckpoint>(FindObjectsSortMode.None);
+
+        foreach (PlatformCheckpoint checkpoint in checkpoints)
         {
-            checkpointPosition = transform.position;
-            checkpointRotation = transform.rotation;
+            if (checkpoint == null || !checkpoint.IsStartingCheckpoint)
+                continue;
+
+            checkpointPosition = checkpoint.GetRespawnPosition(GetPlayerSlotId());
+            checkpointRotation = checkpoint.RespawnPoint.rotation;
             hasCheckpoint = true;
+
+            Debug.Log(
+                $"[RESPAWN] {name} initial start: {checkpointPosition} (player {GetPlayerSlotId()})",
+                this);
+            return;
         }
+    }
+
+    private ulong GetPlayerSlotId()
+    {
+        // Host = 0, first connected client = 1 in the usual two-player setup.
+        return IsSpawned ? OwnerClientId : 0UL;
     }
 
     public bool HasMovementAuthority()
@@ -61,7 +99,8 @@ public class PlayerRespawn : NetworkBehaviour
         return respawnAuthority == RespawnAuthority.Server ? IsServer : IsOwner;
     }
 
-    // Optional initial spawn fallback; it never replaces an activated checkpoint.
+    // Optional explicit spawn fallback used by PlayerSpawnManager.
+    // The provided Transform should already be a valid *individual* player slot.
     public void SetCheckpoint(Transform point)
     {
         if (point == null || !HasMovementAuthority() || currentCheckpoint != null)
@@ -72,26 +111,25 @@ public class PlayerRespawn : NetworkBehaviour
         hasCheckpoint = true;
     }
 
-    // No checkpoint numbers: the first visit to any new platform advances progress.
     public bool TryActivateCheckpoint(PlatformCheckpoint checkpoint)
     {
         if (checkpoint == null)
             return false;
 
-        // Only the server or the local owner tracks this player's progression.
+        // The server saves authoritative checkpoint positions; an owner-client
+        // can still show its personal checkpoint visuals, as in the original code.
         if (IsSpawned && !IsServer && !IsOwner)
             return false;
 
-        // Reaching Start again must not override a checkpoint further into the race.
-        if (checkpoint.IsStartingCheckpoint && visitedCheckpoints.Count > 0)
+        if (checkpoint.IsStartingCheckpoint &&
+            currentCheckpoint != null &&
+            !currentCheckpoint.IsStartingCheckpoint)
             return false;
 
-        // Do not reactivate an older checkpoint when the player revisits it.
+        // Never let an old checkpoint replace a newer first-time checkpoint.
         if (!visitedCheckpoints.Add(checkpoint))
             return false;
 
-        // Each client changes visuals for its OWN player only.
-        // On the server, remote players' checkpoints should not recolor the host's view.
         if (!IsSpawned || IsOwner)
         {
             if (currentCheckpoint != null)
@@ -102,22 +140,36 @@ public class PlayerRespawn : NetworkBehaviour
 
         currentCheckpoint = checkpoint;
 
-        // Save the destination only where the NetworkTransform can be teleported.
         if (HasMovementAuthority())
         {
-            checkpointPosition = checkpoint.RespawnPoint.position;
+            checkpointPosition = checkpoint.GetRespawnPosition(GetPlayerSlotId());
             checkpointRotation = checkpoint.RespawnPoint.rotation;
             hasCheckpoint = true;
         }
 
-        Debug.Log($"[CHECKPOINT] {gameObject.name} reached {checkpoint.name}", this);
+        Debug.Log($"[CHECKPOINT] {name} reached {checkpoint.name}", this);
         return true;
     }
 
     public void Respawn()
     {
-        if (!HasMovementAuthority() || !hasCheckpoint || Time.time < nextRespawnTime)
+        if (!HasMovementAuthority() || Time.time < nextRespawnTime)
             return;
+
+        if (!hasCheckpoint)
+            TryFindStartingCheckpoint();
+
+        if (!hasCheckpoint)
+        {
+            // An unavailable starting checkpoint is preferable to teleporting
+            // back into the FallZone. Log at most once per cooldown interval.
+            nextRespawnTime = Time.time + Mathf.Max(1f, respawnCooldown);
+            Debug.LogWarning(
+                $"[RESPAWN] No valid starting checkpoint for {name}. " +
+                "Add a starting PlatformCheckpoint to Game and assign RespawnPoint.",
+                this);
+            return;
+        }
 
         nextRespawnTime = Time.time + respawnCooldown;
 
@@ -129,6 +181,8 @@ public class PlayerRespawn : NetworkBehaviour
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            rb.position = checkpointPosition;
+            rb.rotation = checkpointRotation;
         }
 
         if (IsSpawned && networkTransform != null)
@@ -136,8 +190,7 @@ public class PlayerRespawn : NetworkBehaviour
             networkTransform.Teleport(
                 checkpointPosition,
                 checkpointRotation,
-                transform.localScale
-            );
+                transform.localScale);
         }
         else
         {
@@ -149,10 +202,11 @@ public class PlayerRespawn : NetworkBehaviour
         if (controllerEnabled)
             controller.enabled = true;
 
-        Debug.Log($"[RESPAWN] {gameObject.name} at {checkpointPosition}", this);
+        Debug.Log(
+            $"[RESPAWN] {name}, player {GetPlayerSlotId()} -> {checkpointPosition}",
+            this);
     }
 
-    // Call when a new race starts and the same player object is reused.
     public void ResetCheckpointProgress()
     {
         if (IsSpawned && !IsServer && !IsOwner)
@@ -161,15 +215,17 @@ public class PlayerRespawn : NetworkBehaviour
         if (!IsSpawned || IsOwner)
         {
             foreach (PlatformCheckpoint checkpoint in visitedCheckpoints)
+            {
                 if (checkpoint != null)
                     checkpoint.ClearVisualProgress();
+            }
         }
 
         visitedCheckpoints.Clear();
         currentCheckpoint = null;
-        checkpointPosition = transform.position;
-        checkpointRotation = transform.rotation;
-        hasCheckpoint = true;
+        hasCheckpoint = false;
         nextRespawnTime = 0f;
+        nextStartLookupTime = 0f;
+        TryFindStartingCheckpoint();
     }
 }
