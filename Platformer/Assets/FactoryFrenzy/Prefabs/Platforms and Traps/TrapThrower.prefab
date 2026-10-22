@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4513333212044375924, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
       propertyPath: m_Name
-      value: TrapThrower Variant
+      value: TrapThrower
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8210077521255612421, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
@@ -59,9 +59,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4024081152681575609, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 4513333212044375924, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 537068018158995264}
+      addedObject: {fileID: -2046306209232161742}
     - targetCorrespondingSourceObject: {fileID: 4024081152681575609, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4294240487410226042}
@@ -77,33 +77,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4024081152681575609, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
   m_PrefabInstance: {fileID: 3567103864067438722}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &537068018158995264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 457271957797715003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 0
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  m_InScenePlacedDisabledByDefault: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  m_InScenePlaced: 0
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &4294240487410226042
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,6 +128,38 @@ MonoBehaviour:
   recoilReturnTime: 0.18
   impactClip: {fileID: 0}
   impactVolume: 0.5
+--- !u!1 &1090560179047043062 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4513333212044375924, guid: 1874288265127cb4b8111bf1e376e645, type: 3}
+  m_PrefabInstance: {fileID: 3567103864067438722}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-2046306209232161742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090560179047043062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 2072965862
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!4 &1239197389632909471 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2356057041430153245, guid: 1874288265127cb4b8111bf1e376e645, type: 3}

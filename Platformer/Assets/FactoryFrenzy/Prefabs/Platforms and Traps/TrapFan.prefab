@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3538572305527382413, guid: a6cbadef914ba344db3b18025545487d, type: 3}
       propertyPath: m_Name
-      value: TrapFan Variant
+      value: TrapFan
       objectReference: {fileID: 0}
     - target: {fileID: 4393602361860230359, guid: a6cbadef914ba344db3b18025545487d, type: 3}
       propertyPath: m_IsActive
@@ -67,6 +67,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3538572305527382413, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7882599043793742730}
     - targetCorrespondingSourceObject: {fileID: 4393602361860230359, guid: a6cbadef914ba344db3b18025545487d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 260953356752827824}
@@ -76,6 +79,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1114624189841889385, guid: a6cbadef914ba344db3b18025545487d, type: 3}
   m_PrefabInstance: {fileID: 4790880782739026349}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8315659714882506784 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3538572305527382413, guid: a6cbadef914ba344db3b18025545487d, type: 3}
+  m_PrefabInstance: {fileID: 4790880782739026349}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7882599043793742730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8315659714882506784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 0
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 0
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &9116858641307712890 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4393602361860230359, guid: a6cbadef914ba344db3b18025545487d, type: 3}
