@@ -8,12 +8,15 @@ public class PlatformCheckpoint : MonoBehaviour
     [SerializeField] private Transform respawnPoint;
     [SerializeField] private bool isStartingCheckpoint;
 
+    [Tooltip("Distance between the two player respawn positions, in world units.")]
+    [SerializeField, Min(0.5f)] private float respawnSlotSpacing = 2f;
+
     [Header("Visuals (not required for the starting platform)")]
     [SerializeField] private Renderer checkpointPadRenderer;
     [SerializeField] private Material baseMaterial;
     [SerializeField] private Material activeMaterial;
 
-    [Header("Runtime state — do not set these manually")]
+    [Header("Runtime state - do not set these manually")]
     [SerializeField] private bool isActive;
     [SerializeField] private bool hasBeenReached;
 
@@ -21,6 +24,14 @@ public class PlatformCheckpoint : MonoBehaviour
     public bool HasBeenReached => hasBeenReached;
     public bool IsStartingCheckpoint => isStartingCheckpoint;
     public Transform RespawnPoint => respawnPoint != null ? respawnPoint : transform;
+
+    // This implementation assigns separate slots for TWO players.
+    // For three or more players, replace this with a spawn-slot allocator.
+    public Vector3 GetRespawnPosition(ulong ownerClientId)
+    {
+        float side = (ownerClientId % 2UL == 0UL) ? -0.5f : 0.5f;
+        return RespawnPoint.position + RespawnPoint.right * (side * respawnSlotSpacing);
+    }
 
     private void Reset()
     {
@@ -46,7 +57,7 @@ public class PlatformCheckpoint : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        // Also detects players spawned directly inside the starting trigger.
+        // Also detects players spawned already inside the starting zone.
         TryRegister(other);
     }
 
@@ -59,7 +70,6 @@ public class PlatformCheckpoint : MonoBehaviour
         player.TryActivateCheckpoint(this);
     }
 
-    // Called by PlayerRespawn for the LOCAL player's checkpoint visuals.
     public void SetVisualActive(bool active)
     {
         isActive = active;
@@ -81,7 +91,6 @@ public class PlatformCheckpoint : MonoBehaviour
         if (checkpointPadRenderer == null)
             return;
 
-        // An old checkpoint stays green even after it is deactivated.
         Material wanted = hasBeenReached ? activeMaterial : baseMaterial;
         if (wanted != null)
             checkpointPadRenderer.sharedMaterial = wanted;
@@ -90,7 +99,16 @@ public class PlatformCheckpoint : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Transform point = RespawnPoint;
+        float halfSpacing = respawnSlotSpacing * 0.5f;
+
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(point.position, 0.3f);
+        Gizmos.DrawWireSphere(point.position, 0.2f);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(point.position - point.right * halfSpacing, 0.25f);
+        Gizmos.DrawWireSphere(point.position + point.right * halfSpacing, 0.25f);
+        Gizmos.DrawLine(
+            point.position - point.right * halfSpacing,
+            point.position + point.right * halfSpacing);
     }
 }
