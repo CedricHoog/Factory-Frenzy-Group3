@@ -82,7 +82,22 @@ public class GameElementManager : MonoBehaviour
         
         LevelSaveData saveData = CreateSaveData(level);
         string json = JsonUtility.ToJson(saveData, true);
-        
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        try
+        {
+            using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+            using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
+            using (var savePicker = new AndroidJavaClass("com.factoryfrenzy.levelsave.LevelJsonSaveActivity"))
+            {
+                savePicker.CallStatic("openSavePicker", activity, json, fileName + ".json");
+            }
+        }
+        catch (AndroidJavaException exception)
+        {
+            Debug.LogError($"Could not open the Android save location picker: {exception.Message}", this);
+        }
+#else
         string path = Path.Combine(
             SaveFolder,
             fileName +".json"
@@ -90,6 +105,7 @@ public class GameElementManager : MonoBehaviour
         
         File.WriteAllText(path, json);
         Debug.Log($"Level saved to: {path}");
+#endif
     }
     
     public LevelSaveData CreateSaveData(LevelData level)

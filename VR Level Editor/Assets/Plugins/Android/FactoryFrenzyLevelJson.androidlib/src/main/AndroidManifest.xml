@@ -1,0 +1,9 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.factoryfrenzy.levelsave">
+    <application>
+        <activity
+            android:name="com.factoryfrenzy.levelsave.LevelJsonSaveActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+    </application>
+</manifest>
