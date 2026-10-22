@@ -5,8 +5,8 @@ Please refer to the [Project Specs Powerpoint](https://viacesifr-my.sharepoint.c
 
 ## Structure
 - [Platformer](./Platformer/) : Multiplayer Platformer. Loads levels from .json files.
-- [VR Level Editor](./VR Level Editor/) : VR Level editor. Create & Save levels to json.
-- [Shared Assets](./Shared Assets/) : Contain all shared files & level save files.
+- [VR Level Editor](./VR%20Level%20Editor/) : VR Level editor. Create & Save levels to json.
+- [Shared Assets](./Shared%20Assets/) : Contain all shared files & level save files.
 
 
 ## Contributors
