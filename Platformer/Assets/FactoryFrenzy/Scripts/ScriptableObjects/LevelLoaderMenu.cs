@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using TMPro;
 using Unity.Netcode;
@@ -31,9 +30,6 @@ public class LevelLoaderMenu : MonoBehaviour
     [Header("Dossier des niveaux (relatif � la racine du d�p�t)")]
     [SerializeField] private string repoRelativeFolder = "Shared Assets/levels";
 
-    [Header("Synchronized Google Drive folder (optional local path)")]
-    [SerializeField] private string googleDriveLevelsFolder = "";
-
     private string _selectedPath = "";
 
     private static bool IsHost =>
@@ -43,12 +39,6 @@ public class LevelLoaderMenu : MonoBehaviour
     {
         get
         {
-            if (!string.IsNullOrWhiteSpace(googleDriveLevelsFolder))
-            {
-                string configuredPath = Environment.ExpandEnvironmentVariables(googleDriveLevelsFolder.Trim());
-                return configuredPath;
-            }
-
 #if UNITY_EDITOR
             string repoRoot = Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
             return Path.GetFullPath(Path.Combine(repoRoot, repoRelativeFolder));
@@ -153,28 +143,8 @@ public class LevelLoaderMenu : MonoBehaviour
         foreach (Transform child in Content)
             Destroy(child.gameObject);
 
-        string folderPath = FolderPath;
-        if (!Path.IsPathRooted(folderPath))
-        {
-            Debug.LogError($"The configured levels folder must be an absolute path: {folderPath}");
-            emptyText.SetActive(true);
-            return;
-        }
-        folderPath = Path.GetFullPath(folderPath);
-
-        if (!Directory.Exists(folderPath))
-        {
-            if (!string.IsNullOrWhiteSpace(googleDriveLevelsFolder))
-            {
-                Debug.LogError($"The configured Google Drive folder is unavailable: {folderPath}");
-                emptyText.SetActive(true);
-                return;
-            }
-
-            Directory.CreateDirectory(folderPath);
-        }
-
-        string[] files = Directory.GetFiles(folderPath, "*.json");
+        Directory.CreateDirectory(FolderPath);
+        string[] files = Directory.GetFiles(FolderPath, "*.json");
 
         emptyText.SetActive(files.Length == 0);
 
