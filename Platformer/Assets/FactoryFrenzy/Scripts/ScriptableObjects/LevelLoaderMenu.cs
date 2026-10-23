@@ -31,6 +31,9 @@ public class LevelLoaderMenu : MonoBehaviour
     private string _selectedPath = "";
     private string _selectedFolderPath = "";
 
+    [Header("Indice")]
+    [SerializeField] private GameObject hintText;   // LevelHintText
+
     private static bool IsHost =>
         NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer;
 
@@ -50,7 +53,12 @@ public class LevelLoaderMenu : MonoBehaviour
 
     private void Update()
     {
-        if (!IsHost) return; // seul l'h�te peut ouvrir le menu
+        bool isHost = IsHost;
+
+        if (hintText != null)
+            hintText.SetActive(isHost && !menuCanvas.activeSelf);
+
+        if (!isHost) return;
 
         if (Keyboard.current != null && Keyboard.current.lKey.wasPressedThisFrame)
             SetMenuOpen(!menuCanvas.activeSelf);
@@ -144,7 +152,7 @@ public class LevelLoaderMenu : MonoBehaviour
     private void UpdateFileNameText()
     {
         fileNameText.text = string.IsNullOrEmpty(_selectedPath)
-            ? "Aucun fichier s�lectionn�"
+            ? "Aucun fichier sélectionné"
             : Path.GetFileName(_selectedPath);
     }
 
